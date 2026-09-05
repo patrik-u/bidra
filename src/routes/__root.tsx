@@ -13,12 +13,13 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Bidra – hitta din väg att göra skillnad',
+        title: 'Bidrakartan – hitta din väg att göra skillnad',
       },
       { name: 'description', content: 'Upptäck initiativ för människor, djur och natur i Sverige. Hitta något du bryr dig om och bidra direkt hos organisationen.' },
       { name: 'theme-color', content: '#ffffff' },
     ],
     links: [
+      { rel: 'canonical', href: 'https://bidrakartan.se' },
       { rel: 'icon', type: 'image/svg+xml', href: '/bidra-symbol.svg' },
       {
         rel: 'stylesheet',

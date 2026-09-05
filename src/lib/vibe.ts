@@ -15,7 +15,7 @@ export async function vibeClient() {
 }
 
 export function savedIds(value: unknown): string[] {
-  if (!Array.isArray(value) || value.length > 1000 || !value.every(id => typeof id === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(id))) throw new Error('De sparade initiativen har ett format som Bidra inte kan läsa.')
+  if (!Array.isArray(value) || value.length > 1000 || !value.every(id => typeof id === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(id))) throw new Error('De sparade initiativen har ett format som Bidrakartan inte kan läsa.')
   return [...new Set(value)]
 }
 

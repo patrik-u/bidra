@@ -1,6 +1,6 @@
 import { initiativeContentSchema, INITIATIVE_CONTENT_ID } from '../src/content/initiative.ts'
 import { writeFile, mkdir, readFile } from 'node:fs/promises'
-const origin = 'https://bidra.opacic357667.chatgpt.site'
+const origin = 'https://bidrakartan.se'
 const fields = Object.keys(initiativeContentSchema.properties)
 const publicSchema = structuredClone(initiativeContentSchema)
 delete publicSchema.$id
@@ -12,9 +12,9 @@ publicSchema.properties.giving.minItems = 1
 publicSchema.allOf = [{ if: { properties: { scope: { const: 'local' } } }, then: { required: ['coordinates'], properties: { coordinates: { type: 'array', prefixItems: [{ type: 'number', minimum: -180, maximum: 180 }, { type: 'number', minimum: -85, maximum: 85 }], items: false, minItems: 2, maxItems: 2 } } } }]
 const registration = {
   origin,
-  manifest: { version: 1, id: 'bidra', name: 'Bidra', permissions: ['profile:read', 'storage', 'app:content'], contentTemplates: [],
+  manifest: { version: 1, id: 'bidra', name: 'Bidrakartan', permissions: ['profile:read', 'storage', 'app:content'], contentTemplates: [],
     presentation: { tagline: 'Hitta din hjärtefråga', description: 'Spara initiativ för människor, djur och natur.', logo: `data:image/svg+xml;base64,${(await readFile('public/bidra-symbol.svg')).toString('base64')}`, locale: 'sv', accentColor: '#e60063' } },
-  management: { ownerHandle: 'opacic', redirectUris: [`${origin}/vibe-callback/`, `${origin}/vibe-callback/?vibe_popup=1`], editorUrl: `${origin}/cloud-content`,
+  management: { migrateFromOrigin: 'https://bidra.opacic357667.chatgpt.site', ownerHandle: 'opacic', redirectUris: [`${origin}/vibe-callback/`, `${origin}/vibe-callback/?vibe_popup=1`], editorUrl: `${origin}/cloud-content`,
     contentTypes: [{ id: INITIATIVE_CONTENT_ID, name: 'Initiativ', schema: initiativeContentSchema,
       publication: { fields, metadataFields: ['sourceReadAt'], searchFields: ['title', 'summary', 'organization', 'keywords'], schema: publicSchema,
         inputSchema: { type: 'object', additionalProperties: false, required: ['checks', 'sourceReadAt', 'note'], properties: {

@@ -1,0 +1,387 @@
+[
+  {
+    "action": "save",
+    "entityId": "bris",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "Någon som lyssnar. Dygnet runt.",
+      "organization": "Bris",
+      "category": "barn",
+      "region": "Hela Sverige",
+      "scope": "national",
+      "geography": "Bris ger stöd till barn i hela Sverige. Ingen enskild plats representerar verksamhetens effekt.",
+      "summary": "Hjälp Bris att fortsätta finnas där när barn behöver prata med en kurator.",
+      "contribution": "Gåvor stöder Bris arbete för barn, bland annat professionellt stöd via telefon, sms, mejl och chatt. Se organisationens egen information om ekonomi och uppföljning.",
+      "source": "https://www.bris.se/stod-bris/",
+      "donate": "https://www.bris.se/stod-bris/",
+      "keywords": [
+        "sverige",
+        "barnrätt",
+        "psykisk hälsa",
+        "stöd",
+        "samtal"
+      ],
+      "giving": [
+        "pengar"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "bris",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "djupsjoan",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "En framtid för skogen i Jämtland",
+      "organization": "Naturarvet",
+      "category": "natur",
+      "region": "Åre kommun, Jämtland",
+      "scope": "local",
+      "coordinates": [
+        13.47,
+        63.42
+      ],
+      "geography": "Insatsområde i Åre kommun. Ungefärlig kommunplacering för Djupsjöåns gammelskog; inte exakta skogskoordinater.",
+      "summary": "Bidra till Naturarvets arbete med att bevara Djupsjöåns gammelskog.",
+      "contribution": "Naturarvet samlar in medel för skogsförvärv och långsiktigt skydd. Läs om Djupsjöåns gammelskog och aktuellt insamlingsläge direkt hos Naturarvet.",
+      "source": "https://naturarvet.se/",
+      "donate": "https://naturarvet.se/",
+      "image": "/images/forest.jpg",
+      "keywords": [
+        "jämtland",
+        "åre",
+        "djupsjöån",
+        "norrland"
+      ],
+      "giving": [
+        "pengar"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "djupsjoan",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "djurskyddet",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "Ge utsatta djur en ny chans",
+      "organization": "Djurskyddet Skellefteå",
+      "category": "djur",
+      "region": "Skellefteå, Västerbotten",
+      "scope": "local",
+      "coordinates": [
+        20.95,
+        64.75
+      ],
+      "geography": "Lokalföreningens verksamhetsområde i Skellefteå. Markören visar orten, inte ett djurhems adress.",
+      "summary": "Hjälp den lokala föreningen att ta hand om djur som behöver omsorg.",
+      "contribution": "Föreningen anger att gåvor går direkt till djuren. Besök deras egen gåvosida för aktuella sätt att stödja verksamheten. Källsidan anger en äldre uppdateringsdag; bekräfta villkoren hos föreningen.",
+      "source": "https://www.djurskyddet.se/skelleftea/hjalp-djuren/gava/",
+      "donate": "https://www.djurskyddet.se/skelleftea/hjalp-djuren/gava/",
+      "keywords": [
+        "skellefteå",
+        "västerbotten",
+        "norrland",
+        "katter",
+        "djurhem"
+      ],
+      "giving": [
+        "pengar"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "djurskyddet",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "ekas",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "Bevara en levande lövskog",
+      "organization": "Naturarvet",
+      "category": "natur",
+      "region": "Gällared, Halland",
+      "scope": "local",
+      "coordinates": [
+        12.84,
+        57.12
+      ],
+      "geography": "Insatsområde i Gällared socken. Markören är ungefärlig och visar inte Ekås fastighetsgränser.",
+      "summary": "Ge ekar, bokar och skogens andra invånare utrymme att leva vidare.",
+      "contribution": "Stöd Naturarvets arbete med Ekås ek-bokskog. Aktuell information om skogen och hur en gåva kan öronmärkas finns på Naturarvets webbplats.",
+      "source": "https://naturarvet.se/",
+      "donate": "https://naturarvet.se/",
+      "image": "/images/forest.jpg",
+      "keywords": [
+        "halland",
+        "gällared",
+        "ekås",
+        "lövskog"
+      ],
+      "giving": [
+        "pengar"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "ekas",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "klimat",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "Tillsammans för ett bättre klimat",
+      "organization": "Naturskyddsföreningen",
+      "category": "klimat",
+      "region": "Hela Sverige",
+      "scope": "national",
+      "geography": "Nationellt påverkansarbete med effekter även utanför Sverige. Visas utan en lokal kartnål.",
+      "summary": "Stöd arbetet för en starkare klimatpolitik och mindre beroende av fossil energi.",
+      "contribution": "Gåvan bidrar bland annat till klimatarbete, granskning och påverkan för hållbara energisystem. Bidrakartan visar inga beräknade utsläppsminskningar för en enskild gåva.",
+      "source": "https://www.naturskyddsforeningen.se/gavor/gava-till-klimatet/",
+      "donate": "https://www.naturskyddsforeningen.se/gavor/gava-till-klimatet/",
+      "keywords": [
+        "sverige",
+        "klimatpolitik",
+        "fossil",
+        "demokrati",
+        "koldioxid"
+      ],
+      "giving": [
+        "pengar"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "klimat",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "skraphjaltar",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "Mer liv. Mindre skräp.",
+      "organization": "Håll Sverige Rent",
+      "category": "hav",
+      "region": "Hela Sverige",
+      "scope": "national",
+      "geography": "Rikstäckande engagemang. Visas utan en enskild kartnål eftersom du kan delta på många platser.",
+      "summary": "Bli en del av rörelsen som håller skräpet borta från våra stränder och vår natur.",
+      "contribution": "Bli skräphjälte och få vägledning för att plocka skräp där du bor. Här bidrar du med tid och engagemang; anmälan och aktuell information finns hos Håll Sverige Rent.",
+      "source": "https://hsr.se/skraphjaltar",
+      "donate": "https://hsr.se/skraphjaltar",
+      "image": "/images/coast.jpg",
+      "keywords": [
+        "sverige",
+        "plast",
+        "skräpplockning",
+        "volontär",
+        "strand",
+        "hav"
+      ],
+      "giving": [
+        "tid"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "skraphjaltar",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "soderboda",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "Låt gammelskogen leva vidare",
+      "organization": "Naturarvet",
+      "category": "natur",
+      "region": "Gräsö, Uppland",
+      "scope": "local",
+      "coordinates": [
+        18.52,
+        60.43
+      ],
+      "geography": "Insatsområde på Gräsö. Markören är ungefärlig och visar inte en fastighetsgräns.",
+      "summary": "Var med och bevara Söderboda gammelskog och de arter som har sitt hem där.",
+      "contribution": "Gåvor hjälper Naturarvet att förvärva och långsiktigt bevara gammelskog. På organisationens sida väljer du hur du vill bidra och ser aktuella villkor för en skogsruta.",
+      "source": "https://naturarvet.se/",
+      "donate": "https://naturarvet.se/",
+      "image": "/images/forest.jpg",
+      "keywords": [
+        "söderboda",
+        "gräsö",
+        "uppland",
+        "uppsala"
+      ],
+      "giving": [
+        "pengar"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "soderboda",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  },
+  {
+    "action": "save",
+    "entityId": "stadsmissionen",
+    "version": 0,
+    "templateId": "vibe.initiative.v1",
+    "payload": {
+      "title": "En tryggare vardag för fler",
+      "organization": "Stockholms Stadsmission",
+      "category": "manniskor",
+      "region": "Stockholm",
+      "scope": "local",
+      "coordinates": [
+        18.068,
+        59.33
+      ],
+      "geography": "Verksamhetsområde Stockholm. Markören representerar staden, inte en särskild mötesplats eller mottagare.",
+      "summary": "Stöd måltider, mötesplatser och vägar vidare för människor som lever i utsatthet.",
+      "contribution": "Stödet går till både akut hjälp och långsiktigt socialt arbete i Stockholm. Du kan också läsa om att bidra med din tid som volontär på organisationens webbplats.",
+      "source": "https://www.stadsmissionen.se/",
+      "donate": "https://www.stadsmissionen.se/",
+      "image": "/images/community.jpg",
+      "keywords": [
+        "stockholm",
+        "fattigdom",
+        "hemlöshet",
+        "volontär",
+        "mat",
+        "social"
+      ],
+      "giving": [
+        "pengar",
+        "tid"
+      ]
+    },
+    "note": "Import av befintligt publicerat initiativ från tidigare katalog."
+  },
+  {
+    "action": "publish",
+    "entityId": "stadsmissionen",
+    "version": 1,
+    "templateId": "vibe.initiative.v1",
+    "metadata": {
+      "checks": {
+        "identity": true,
+        "source": true,
+        "geography": true,
+        "donation": true
+      },
+      "sourceReadAt": "2026-09-05",
+      "note": "Migrerat från redan publicerad katalog. Befintlig granskning och källdatum bevaras; ingen ny källgranskning utförd vid flytten."
+    }
+  }
+]

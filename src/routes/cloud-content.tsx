@@ -4,7 +4,7 @@ import { vibeClient, vibeOrigin } from '../lib/vibe'
 import { appContentTemplate, bindAppContent, setContentRequest, type AppContentPage } from '../content/editor'
 import '../content/editor.css'
 
-const app = { id: 'app_420b9e39-2820-45c2-b53f-89befa0358b6', name: 'Bidra' }
+const app = { id: 'app_420b9e39-2820-45c2-b53f-89befa0358b6', name: 'Bidrakartan' }
 const scopes = ['profile:read', 'storage', 'app:content']
 function ContentEditor() {
   const root = useRef<HTMLDivElement>(null)
@@ -24,7 +24,7 @@ function ContentEditor() {
     setContentRequest(request)
     const params = new URLSearchParams(location.search)
     const response = await request(`/api/managed-apps/${app.id}/content?offset=${encodeURIComponent(params.get('offset') ?? '0')}`)
-    if (!response.ok) throw new Error(response.status === 404 || response.status === 403 ? 'Ditt Vibe-konto saknar administratörsåtkomst till Bidra.' : 'Innehållet kunde inte läsas.')
+    if (!response.ok) throw new Error(response.status === 404 || response.status === 403 ? 'Ditt Vibe-konto saknar administratörsåtkomst till Bidrakartan.' : 'Innehållet kunde inte läsas.')
     const page = await response.json() as AppContentPage
     if (root.current) {
       root.current.innerHTML = appContentTemplate(app, page)
@@ -42,8 +42,8 @@ function ContentEditor() {
     catch (cause) { setError(cause instanceof Error ? cause.message : 'Inloggningen misslyckades.') }
     finally { try { popup.close() } catch {} setBusy(false) }
   }
-  return <main className="cloud-editor"><header><a href="/"><img src="/bidra-symbol.svg" width="36" height="36" alt=""/> bidra.</a><a href="/admin">Befintlig redaktion</a></header>
-    {!ready && <section><h1>Initiativ · Content-pilot</h1><p>Logga in med det Vibe-konto som äger eller administrerar Bidra.</p><button onClick={connect} disabled={busy}>{busy ? 'Slutför inloggningen i fönstret…' : 'Logga in'}</button></section>}
+  return <main className="cloud-editor"><header><a href="/"><img src="/bidra-symbol.svg" width="36" height="36" alt=""/> bidrakartan.</a><a href="/">Till kartan</a></header>
+    {!ready && <section><h1>Redaktion</h1><p>Logga in med det Vibe-konto som äger eller administrerar Bidrakartan.</p><button onClick={connect} disabled={busy}>{busy ? 'Slutför inloggningen i fönstret…' : 'Logga in'}</button></section>}
     {error && <p role="alert">{error}</p>}<div ref={root}/></main>
 }
-export const Route = createFileRoute('/cloud-content')({ component: ContentEditor, head: () => ({ meta: [{ title: 'Initiativ · Bidra' }, { name: 'robots', content: 'noindex' }] }) })
+export const Route = createFileRoute('/cloud-content')({ component: ContentEditor, head: () => ({ meta: [{ title: 'Initiativ · Bidrakartan' }, { name: 'robots', content: 'noindex' }] }) })

@@ -54,12 +54,12 @@ export function useVibeBookmarks(notify: (message: string) => void) {
         setPopupFallback(true)
       }
     } finally { try { popup?.close() } catch { /* Browser may isolate the popup. */ } loginController.current = null; setLoginPending(false); lock.current = false; setBusy(false) }
-    if (completed) { await refresh(); notify('Du är inloggad på Bidra.') }
+    if (completed) { await refresh(); notify('Du är inloggad på Bidrakartan.') }
   }
   const logout = async () => {
     if (lock.current) return
     lock.current = true; setBusy(true)
-    try { await (await vibeClient()).logout(); setError(''); notify('Du är utloggad från Bidra på den här enheten.') }
+    try { await (await vibeClient()).logout(); setError(''); notify('Du är utloggad från Bidrakartan på den här enheten.') }
     catch { setError('Utloggad här, men Vibe kunde inte bekräfta återkallningen. Kontrollera Anslutna appar i Vibe Cloud.') }
     finally { setProfile(null); setSaved(deviceSaved()); lock.current = false; setBusy(false) }
   }

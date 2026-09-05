@@ -1,0 +1,54 @@
+import { createServer } from 'node:http'
+import { readFile, stat } from 'node:fs/promises'
+import { resolve, extname, sep } from 'node:path'
+
+const root = resolve('dist/client')
+const cloud = process.env.VIBE_ORIGIN || 'https://console.vibecloud.se'
+const contentUrl = new URL('/api/public/apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=vibe.initiative.v1', cloud)
+const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8' }
+
+export async function catalog(fetcher = fetch) {
+  const initiatives = []
+  for (let offset = 0; offset < 10000; offset += 50) {
+    const url = new URL(contentUrl); url.searchParams.set('offset', String(offset))
+    const response = await fetcher(url, { signal: AbortSignal.timeout(12000) })
+    if (!response.ok) throw new Error('Cloud content unavailable')
+    const page = await response.json()
+    if (!Array.isArray(page.documents) || typeof page.hasMore !== 'boolean') throw new Error('Invalid content response')
+    for (const document of page.documents) {
+      const item = document.payload
+      if (document.templateId !== 'vibe.initiative.v1' || !item || !['natur','manniskor','djur','klimat','hav','barn'].includes(item.category)) throw new Error('Invalid initiative')
+      initiatives.push({ ...item, id: document.entityId, keywords: item.keywords ?? [] })
+    }
+    if (!page.hasMore) return { initiatives }
+  }
+  throw new Error('Catalog pagination limit reached')
+}
+
+export const server = createServer(async (request, response) => {
+  const send = (status, value) => { response.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); response.end(JSON.stringify(value)) }
+  response.setHeader('X-Content-Type-Options', 'nosniff')
+  response.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.setHeader('X-Frame-Options', 'DENY')
+  // A cross-origin popup must retain window.opener for the SDK callback.
+  response.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
+  try {
+    const url = new URL(request.url, 'http://localhost')
+    if (!['GET','HEAD'].includes(request.method)) return send(405, { error: 'Method not allowed' })
+    if (url.pathname === '/healthz') return send(200, { ok: true })
+    if (request.headers.host === 'www.bidrakartan.se') { response.writeHead(308, { location: `https://bidrakartan.se${url.pathname}${url.search}` }); return response.end() }
+    if (url.pathname === '/api/initiatives') return send(200, await catalog())
+    if (url.pathname === '/api/session') return send(200, { admin: false, authenticated: false })
+    if (url.pathname.startsWith('/api/')) return send(404, { error: 'Not found' })
+    if (url.pathname.replace(/\/$/, '') === '/admin') { response.writeHead(302, { location: '/cloud-content' }); return response.end() }
+    let path = resolve(root, '.' + decodeURIComponent(url.pathname))
+    if (!path.startsWith(root + sep) && path !== root) return send(404, { error: 'Not found' })
+    if ((await stat(path)).isDirectory()) path = resolve(path, 'index.html')
+    const body = await readFile(path)
+    response.writeHead(200, { 'content-type': mime[extname(path)] || 'application/octet-stream', 'cache-control': url.pathname.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'no-cache' })
+    response.end(request.method === 'HEAD' ? undefined : body)
+  } catch (error) {
+    send(error.code === 'ENOENT' || error.code === 'ENOTDIR' ? 404 : 503, { error: 'Innehållet kunde inte hämtas. Försök igen.' })
+  }
+})
+if (process.env.NODE_ENV !== 'test') server.listen(Number(process.env.PORT || 8080), '0.0.0.0')

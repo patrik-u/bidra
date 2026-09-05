@@ -1,7 +1,11 @@
 {
   "version": 1,
   "id": "bidra",
-  "name": "Bidra",
-  "permissions": ["profile:read", "storage"],
+  "name": "Bidrakartan",
+  "permissions": [
+    "profile:read",
+    "storage",
+    "app:content"
+  ],
   "contentTemplates": []
 }

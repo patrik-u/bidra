@@ -1,9 +1,9 @@
 {
-  "origin": "https://bidra.opacic357667.chatgpt.site",
+  "origin": "https://bidrakartan.se",
   "manifest": {
     "version": 1,
     "id": "bidra",
-    "name": "Bidra",
+    "name": "Bidrakartan",
     "permissions": [
       "profile:read",
       "storage",
@@ -19,12 +19,13 @@
     }
   },
   "management": {
+    "migrateFromOrigin": "https://bidra.opacic357667.chatgpt.site",
     "ownerHandle": "opacic",
     "redirectUris": [
-      "https://bidra.opacic357667.chatgpt.site/vibe-callback/",
-      "https://bidra.opacic357667.chatgpt.site/vibe-callback/?vibe_popup=1"
+      "https://bidrakartan.se/vibe-callback/",
+      "https://bidrakartan.se/vibe-callback/?vibe_popup=1"
     ],
-    "editorUrl": "https://bidra.opacic357667.chatgpt.site/cloud-content",
+    "editorUrl": "https://bidrakartan.se/cloud-content",
     "contentTypes": [
       {
         "id": "vibe.initiative.v1",

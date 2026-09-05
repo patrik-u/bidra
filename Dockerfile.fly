@@ -1,0 +1,16 @@
+FROM node:22-slim AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY vendor ./vendor
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:22-slim
+WORKDIR /app
+ENV NODE_ENV=production PORT=8080
+COPY --from=build /app/dist/client ./dist/client
+COPY server/fly.mjs ./server/fly.mjs
+USER node
+EXPOSE 8080
+CMD ["node", "server/fly.mjs"]

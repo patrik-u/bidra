@@ -41,3 +41,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .account-actions{display:flex;align-items:center;gap:10px}.account-nav{display:flex;align-items:center;gap:7px;padding:10px 12px;border-radius:24px;color:var(--primary);font-size:.875rem;white-space:nowrap}.account-nav:hover{background:#fff0f7}.saved-context{font-size:.875rem;margin:0 0 15px;color:#657064}.saved-context button,.account-status button{text-decoration:underline;color:var(--primary);padding:4px}.account-status{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;padding:12px 20px;background:#fff0f7;font-size:.875rem}.account-actions button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}@media(max-width:760px){.account-actions{gap:3px}.account-nav{padding:8px;font-size:.875rem}.account-actions .saved-nav{padding:8px}.account-actions .saved-nav>span:not(.saved-count){display:none}}
 
 .callback-status{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}.callback-status h1{font-size:2rem;margin:0}.callback-status button{color:var(--primary);text-decoration:underline}
+
+/* Keep the longer name and navigation comfortable on laptop screens. */
+.site-header .brand{font-size:28px;white-space:nowrap}.site-header nav{margin-left:0;gap:22px}
+@media(max-width:1100px){.site-header{padding-left:24px;padding-right:24px;gap:16px}.site-header .brand{font-size:24px}.site-header nav{gap:14px}.nav-link{font-size:.8rem}}
