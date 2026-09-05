@@ -1,4 +1,5 @@
 import { rulesEndpoint } from './rules-api.mjs'
+import { imageStore, imageEndpoint, startInitiativeImages } from './initiative-images.mjs'
 import { publicOrganizations, withOrganizations, startOrganizationChecks, organizationsEndpoint } from './organizations.mjs'
 import { startIntake } from './intake.mjs'
 import { createServer } from 'node:http'
@@ -28,6 +29,8 @@ export async function catalog(fetcher = fetch) {
   throw new Error('Catalog pagination limit reached')
 }
 
+async function visibleCatalog(){const data=await catalog();return {initiatives:(await imageStore()).apply(data.initiatives)}}
+
 export const server = createServer(async (request, response) => {
   const send = (status, value) => { response.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); response.end(JSON.stringify(value)) }
   response.setHeader('X-Content-Type-Options', 'nosniff')
@@ -38,15 +41,16 @@ export const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, 'http://localhost')
     if (url.pathname === '/api/editor/rules') return await rulesEndpoint(request, send)
+    if (url.pathname === '/api/editor/images') return await imageEndpoint(request,send,async()=>(await catalog()).initiatives)
     if (url.pathname === '/api/editor/organizations') return await organizationsEndpoint(request, send)
     if (!['GET','HEAD'].includes(request.method)) return send(405, { error: 'Method not allowed' })
     if (url.pathname === '/healthz') return send(200, { ok: true })
     if (request.headers.host === 'www.bidrakartan.se') { response.writeHead(308, { location: `https://bidrakartan.se${url.pathname}${url.search}` }); return response.end() }
-    if (url.pathname === '/api/initiatives') return send(200, await catalog())
+    if (url.pathname === '/api/initiatives') return send(200, await visibleCatalog())
     if (url.pathname === '/api/session') return send(200, { admin: false, authenticated: false })
     if (url.pathname.startsWith('/api/')) return send(404, { error: 'Not found' })
     if (url.pathname.replace(/\/$/, '') === '/admin') { response.writeHead(302, { location: '/cloud-content' }); return response.end() }
-    if (/^\/images\/generated-[a-f0-9]{40}\.jpg$/.test(url.pathname)) { const published=(await catalog()).initiatives.some(item=>item.image===url.pathname); if(!published){const auth=request.headers.authorization;if(!auth || auth.length>1024)return send(401,{error:'Authentication required'});const access=await fetch(new URL('/api/managed-apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=vibe.initiative.v1',cloud),{headers:{authorization:auth},signal:AbortSignal.timeout(12000)});if(!access.ok)return send(403,{error:'Forbidden'})} const bytes=await readFile(resolve(process.env.DATA_DIR || '/data', 'images', url.pathname.split('/').pop())); response.writeHead(200, {'content-type':'image/jpeg','cache-control':published?'public, max-age=3600':'private, no-store'}); return response.end(bytes) }
+    if (/^\/images\/generated-[a-f0-9]{40}\.jpg$/.test(url.pathname)) { const published=(await visibleCatalog()).initiatives.some(item=>item.image===url.pathname); if(!published){const auth=request.headers.authorization;if(!auth || auth.length>1024)return send(401,{error:'Authentication required'});const access=await fetch(new URL('/api/managed-apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=vibe.initiative.v1',cloud),{headers:{authorization:auth},signal:AbortSignal.timeout(12000)});if(!access.ok)return send(403,{error:'Forbidden'})} const bytes=await readFile(resolve(process.env.DATA_DIR || '/data', 'images', url.pathname.split('/').pop())); response.writeHead(200, {'content-type':'image/jpeg','cache-control':published?'public, max-age=3600':'private, no-store'}); return response.end(bytes) }
     let path = resolve(root, '.' + decodeURIComponent(url.pathname))
     if (!path.startsWith(root + sep) && path !== root) return send(404, { error: 'Not found' })
     if ((await stat(path)).isDirectory()) path = resolve(path, 'index.html')
@@ -61,3 +65,4 @@ if (process.env.NODE_ENV !== 'test') server.listen(Number(process.env.PORT || 80
 
 if (process.env.NODE_ENV !== 'test') void startIntake().catch(error => console.error('Intake startup failed:', error.message))
 if (process.env.NODE_ENV !== 'test') void startOrganizationChecks().catch(error => console.error('Organization startup failed:', error.message))
+if (process.env.NODE_ENV !== 'test') void startInitiativeImages(async()=>(await catalog()).initiatives).catch(error=>console.error('Image startup failed:',error.message))

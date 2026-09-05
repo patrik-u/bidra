@@ -75,5 +75,5 @@ alla organisationers kampanjer. RSS-insamlingen från Naturarvet och
 Naturskyddsföreningen fortsätter separat, med samma granskningsflöde som
 tidigare. Nästa utbyggnad är källspecifika kopplingar för kampanjer,
 automatisk innehållsjämförelse, explicit livscykel för tidsbegränsade
-möjligheter och innehållsanpassade bilder. Sådana bilder behöver budget och
-tydlig märkning som illustrationer, inte dokumentära verksamhetsbilder.
+möjligheter. Innehållsanpassade bilder har nu kopplats till alla publicerade
+initiativ som saknar bild; se [bildgenerering](BILDGENERERING.md).

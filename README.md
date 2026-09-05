@@ -22,4 +22,4 @@ Databasschemat finns i db/schema.ts. Generera schemaändringar med npm run db:ge
 
 Sökningen är regelbaserad. Bokmärken kan sparas på enheten eller på ett Vibe-konto för åtkomst från flera enheter. Se [Vibe-kontokopplingen](docs/VIBE-KONTO.md). Automatisk insamling, AI-sökning, externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
 
-Se [redaktion och drift](docs/REDAKTION.md), [MVP och färdplan](docs/MVP.md) och [bildkällor](docs/ASSETS.md).
+Se [redaktion och drift](docs/REDAKTION.md), [MVP och färdplan](docs/MVP.md), [bildkällor](docs/ASSETS.md) och [automatisk bildgenerering](docs/BILDGENERERING.md).

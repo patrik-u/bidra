@@ -6,6 +6,7 @@ import { appContentTemplate, bindAppContent, setContentRequest, type AppContentP
 import '../content/editor.css'
 import IntakeQueue from '../components/IntakeQueue'
 import Organizations from '../components/Organizations'
+import InitiativeImages from '../components/InitiativeImages'
 
 const app = { id: 'app_420b9e39-2820-45c2-b53f-89befa0358b6', name: 'Bidrakartan' }
 const scopes = ['profile:read', 'storage', 'app:content']
@@ -57,7 +58,7 @@ function ContentEditor() {
     catch (cause) { setError(cause instanceof Error ? cause.message : 'Inloggningen misslyckades.') }
     finally { try { popup.close() } catch {} setBusy(false) }
   }
-  const sections=[{id:'overview',label:'Översikt',Icon:LayoutDashboard},{id:'pending',label:'Väntande förslag',Icon:Inbox},{id:'rejected',label:'Bortsorterade av AI',Icon:Archive},{id:'initiatives',label:'Initiativ',Icon:FileText},{id:'organizations',label:'Organisationer',Icon:FileText},{id:'create',label:'Skapa nytt',Icon:PlusCircle},{id:'rules',label:'AI-regler',Icon:SlidersHorizontal}]
+  const sections=[{id:'overview',label:'Översikt',Icon:LayoutDashboard},{id:'pending',label:'Väntande förslag',Icon:Inbox},{id:'rejected',label:'Bortsorterade av AI',Icon:Archive},{id:'initiatives',label:'Initiativ',Icon:FileText},{id:'organizations',label:'Organisationer',Icon:FileText},{id:'create',label:'Skapa nytt',Icon:PlusCircle},{id:'images',label:'Bilder',Icon:FileText},{id:'rules',label:'AI-regler',Icon:SlidersHorizontal}]
   return <main className={`cloud-editor editorial-dashboard view-${section} ${editing?'is-editing':''}`}><header><a href="/"><img src="/bidra-symbol.svg" width="36" height="36" alt=""/> bidrakartan.<span className="editorial-brand-label">Redaktion</span></a><a href="/"><ArrowLeft size={16}/> Till kartan</a></header>
     <div className="editorial-layout"><aside className="editorial-sidebar"><nav aria-label="Redaktionens avdelningar">{sections.map(({id,label,Icon})=><a key={id} href={`/cloud-content?section=${id}`} aria-current={section===id?'page':undefined}><Icon size={18}/>{label}</a>)}</nav><p>Hantera innehåll och regler för Bidrakartan.</p></aside><div className="editorial-main">
     {!ready && <section><h1>Redaktion</h1><p>Logga in med det Vibe-konto som äger eller administrerar Bidrakartan.</p><button onClick={connect} disabled={busy}>{busy?'Slutför inloggningen i fönstret…':'Logga in'}</button></section>}
@@ -65,6 +66,7 @@ function ContentEditor() {
     {ready&&section==='overview'&&<section><p className="results-eyebrow">REDAKTION</p><h1>Översikt</h1><p>Från insamlat förslag till publicerat initiativ.</p><div className="editorial-metrics"><a href="?section=initiatives"><strong>{counts.published}</strong>Publicerade initiativ</a><a href="?section=initiatives"><strong>{counts.drafts}</strong>Initiativutkast</a><a href="?section=pending"><strong>{counts.candidates}</strong>Obehandlade förslag, inklusive AI-sorterade</a></div><div className="editorial-overview-note"><h2>Insamlingen arbetar i bakgrunden</h2><p>RSS-källor kontrolleras dagligen. AI-bearbetning körs varje timme inom appens anropsgränser. Publicering kräver fortfarande ett redaktionellt beslut.</p><a className="button" href="?section=pending">Gå till förslagen</a> <a className="button secondary" href="?section=rules">Justera AI-regler</a></div></section>}
     {ready&&['pending','rejected','rules'].includes(section)&&<><h1>{sections.find(item=>item.id===section)?.label}</h1><IntakeQueue key={section} mode={section==='rules'?'rules':'queue'} initialFilter={section==='rejected'?'rejected':'all'}/></>}
     {ready&&section==='organizations'&&<Organizations/>}
+    {ready&&section==='images'&&<InitiativeImages/>}
     <div ref={root} hidden={!ready||!['initiatives','create'].includes(section)}/>
     </div></div></main>
 
