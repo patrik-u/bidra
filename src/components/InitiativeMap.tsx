@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import InitiativeCard from './InitiativeCard'
 import { categoryIcons } from './categoryIcons'
-import { LocateFixed, Minus, Plus, MapPinned, Info, Maximize, X } from 'lucide-react'
+import { LocateFixed, Minus, Plus, MapPinned, Info, Maximize, X, ChevronDown } from 'lucide-react'
 import type { Map as LibreMap, Marker } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { categories } from '../data/initiatives'
@@ -24,6 +24,7 @@ export default function InitiativeMap({ items, selected, hovered, onSelect, save
   const markers = useRef<{ id: string; marker: Marker }[]>([])
   const onSelectRef = useRef(onSelect)
   onSelectRef.current = onSelect
+  const [placesOpen,setPlacesOpen]=useState(false)
   const [areas,setAreas]=useState<Area[]>([]),[locating,setLocating]=useState(false),[locationMessage,setLocationMessage]=useState('')
   const userMarker=useRef<Marker|null>(null)
   const [ready, setReady] = useState(false)
@@ -39,7 +40,7 @@ export default function InitiativeMap({ items, selected, hovered, onSelect, save
     navigator.geolocation.getCurrentPosition(async position=>{
       const point:Position=[position.coords.longitude,position.coords.latitude]
       goArea({name:'Min plats',center:point,zoom:13})
-      try{const {Marker}=await import('maplibre-gl');if(!mapRef.current)return;userMarker.current?.remove();const dot=document.createElement('span');dot.className='my-location-dot';dot.title='Din ungefärliga plats';userMarker.current=new Marker({element:dot}).setLngLat(point).addTo(mapRef.current);setAreas(await locationAreas(point));setLocationMessage('Plats hittad. Områdesgränser och närmaste ort är ungefärliga.')}catch{setLocationMessage('Zoomade till din plats, men områdesnamnen kunde inte hämtas.')}finally{setLocating(false)}
+      try{const {Marker}=await import('maplibre-gl');if(!mapRef.current)return;userMarker.current?.remove();const dot=document.createElement('span');dot.className='my-location-dot';dot.title='Din ungefärliga plats';userMarker.current=new Marker({element:dot}).setLngLat(point).addTo(mapRef.current);setAreas(await locationAreas(point));setLocationMessage('')}catch{setLocationMessage('Zoomade till din plats, men områdesnamnen kunde inte hämtas.')}finally{setLocating(false)}
     },error=>{setLocating(false);setLocationMessage(error.code===1?'Platsåtkomst nekades. Tillåt plats i webbläsaren och försök igen.':'Din plats kunde inte hittas. Försök igen.')},{enableHighAccuracy:false,timeout:12000,maximumAge:60000})
   }
   useEffect(()=>{const close=(event:Event)=>{if(event.type==='scroll' && event.target instanceof Node && popup.current?.contains(event.target))return;dismiss()};window.addEventListener('scroll',close,true);window.addEventListener('resize',close);return()=>{window.removeEventListener('scroll',close,true);window.removeEventListener('resize',close)}},[])
@@ -117,7 +118,12 @@ export default function InitiativeMap({ items, selected, hovered, onSelect, save
     {!loadedTiles && !failed && <div className="map-loading" role="status"><MapPinned size={27} /><span>Laddar kartan över Sverige…</span></div>}
     {failed && <div className="map-loading map-failed" role="status"><MapPinned size={30} /><strong>Kartan kunde inte laddas</strong><span>Du kan fortfarande utforska alla initiativ i listan.</span><button className="primary-button" onClick={() => setRetry(n => n + 1)}>Försök igen</button></div>}
     <div className="map-topline"><span className="map-location"><span className="live-dot" /> Sverige <span className="map-location-divider" /> {items.filter(i => i.scope === 'local').length} insatsområden</span><button className="map-reset icon-button" onClick={reset} aria-label="Visa hela Sverige" title="Visa hela Sverige"><Maximize size={19} /></button></div>
-    <div className="map-place-controls"><button disabled={!ready||locating} onClick={locate}><LocateFixed size={16}/>{locating?'Söker plats…':'Min plats'}</button><button onClick={reset}>Sverige</button>{areas.map(area=><button key={area.name} onClick={()=>goArea(area)}>{area.name}</button>)}</div>
+    <div className="map-place-controls"><button disabled={!ready||locating} onClick={locate}><LocateFixed size={16}/>{locating?'Söker plats…':'Min plats'}</button>
+      <div className="map-area-menu" onMouseEnter={()=>{if(matchMedia('(hover: hover)').matches)setPlacesOpen(true)}} onMouseLeave={()=>setPlacesOpen(false)} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))setPlacesOpen(false)}} onKeyDown={event=>{if(event.key==='Escape'){setPlacesOpen(false);event.currentTarget.querySelector('button')?.focus()}}}>
+        <button aria-expanded={placesOpen} aria-controls="map-area-options" onClick={()=>setPlacesOpen(value=>!value)}><MapPinned size={16}/>Visa område<ChevronDown size={14}/></button>
+        {placesOpen&&<div className="map-area-options" id="map-area-options"><button onClick={()=>{reset();setPlacesOpen(false)}}>Hela Sverige</button>{areas.map(area=><button key={area.name} onClick={()=>{goArea(area);setPlacesOpen(false)}}>{area.name}</button>)}{!areas.length&&<p>Välj Min plats för lokala områden.</p>}</div>}
+      </div>
+    </div>
     {locationMessage&&<p className="map-location-message" role="status">{locationMessage}</p>}
     <div className="map-zoom"><button onClick={() => mapRef.current?.zoomIn()} aria-label="Zooma in"><Plus size={20} /></button><button onClick={() => mapRef.current?.zoomOut()} aria-label="Zooma ut"><Minus size={20} /></button></div>
     <div className="map-bottomline"><button className="legend-toggle" aria-expanded={legendOpen} onClick={() => setLegendOpen(v => !v)}><Info size={16} /> Vad visar kartan?</button><span className="national-count">+ {items.filter(i => i.scope === 'national').length} rikstäckande i listan</span></div>
