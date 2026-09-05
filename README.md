@@ -20,6 +20,6 @@ Bygget ger förrenderade sidor i dist/client och ett API i dist/server/index.js.
 
 Databasschemat finns i db/schema.ts. Generera schemaändringar med npm run db:generate och ändra inte redan tillämpade migrationer. Produktionsvärden anges privat i Sites. wrangler.jsonc är endast lokal konfiguration.
 
-Sökningen är regelbaserad och bokmärken sparas på den egna enheten. Automatisk insamling, AI-sökning, externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
+Sökningen är regelbaserad. Bokmärken kan sparas på enheten eller på ett Vibe-konto för åtkomst från flera enheter. Se [Vibe-kontokopplingen](docs/VIBE-KONTO.md). Automatisk insamling, AI-sökning, externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
 
 Se [redaktion och drift](docs/REDAKTION.md), [MVP och färdplan](docs/MVP.md) och [bildkällor](docs/ASSETS.md).

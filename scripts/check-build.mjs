@@ -10,4 +10,9 @@ assert.ok(workerCode.length > 10000, 'MapLibre worker bundle is unexpectedly emp
 assert.ok(!workerCode.includes('./maplibre-gl-shared.mjs'), 'Worker references an unbundled sibling file.')
 await access(new URL('../dist/client/index.html', import.meta.url))
 await access(new URL('../dist/client/admin/index.html', import.meta.url))
+await access(new URL('../dist/client/vibe-callback/index.html', import.meta.url))
+for (const path of ['index.html', 'vibe-callback/index.html']) {
+  const html = await readFile(new URL(`../dist/client/${path}`, import.meta.url), 'utf8')
+  assert.ok(html.includes('Vad vill du') && !html.includes('ERR_MODULE_NOT_FOUND'), `${path} did not render Bidra.`)
+}
 console.log('Public HTML and self-contained MapLibre worker verified.')

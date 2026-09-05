@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "id": "bidra",
+  "name": "Bidra",
+  "permissions": ["profile:read", "storage"],
+  "contentTemplates": []
+}
