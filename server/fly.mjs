@@ -1,3 +1,4 @@
+import { rulesEndpoint } from './rules-api.mjs'
 import { startIntake } from './intake.mjs'
 import { createServer } from 'node:http'
 import { readFile, stat } from 'node:fs/promises'
@@ -35,6 +36,7 @@ export const server = createServer(async (request, response) => {
   response.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
   try {
     const url = new URL(request.url, 'http://localhost')
+    if (url.pathname === '/api/editor/rules') return await rulesEndpoint(request, send)
     if (!['GET','HEAD'].includes(request.method)) return send(405, { error: 'Method not allowed' })
     if (url.pathname === '/healthz') return send(200, { ok: true })
     if (request.headers.host === 'www.bidrakartan.se') { response.writeHead(308, { location: `https://bidrakartan.se${url.pathname}${url.search}` }); return response.end() }

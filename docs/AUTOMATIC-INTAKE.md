@@ -76,3 +76,33 @@ detail view. Touch click opens details directly. Escape dismisses the preview.
 - https://developers.openai.com/api/docs/guides/structured-outputs#json-mode
 - https://developers.openai.com/api/docs/guides/image-generation
 - https://mariestad.naturskyddsforeningen.se/bevarade-sidor/bevaka-nyhetsflode-automatiskt/
+
+## Editable editorial AI rules
+
+Redaktion now includes AI-regler: a saved draft, immutable activated versions,
+per-stage instructions and source additions. Restoring history loads an editable
+copy; activation creates a new version. Optimistic revision checks reject stale
+saves. Configuration and assessments live in `/data/rules.sqlite` on the existing
+persistent Fly volume, not in Vibe Cloud's generic runtime or Content export.
+Include this database with the intake database in host backups.
+
+The worker snapshots the active rules per candidate. It records decision,
+reason, verbatim supporting excerpt, contribution type and rule version.
+Missing/invalid supporting evidence forces an uncertain classification. Only
+recommended candidates get newly generated images. This is a review signal,
+not an authorization to publish; automatic publication is still disabled.
+
+Editors can select up to three existing source candidates for a dry run with
+unsaved draft rules. This consumes text calls but changes no content, active
+configuration or assessments, and generates no images. Explicit reassessment
+uses active rules and updates only classification, not existing summaries or
+images. Already accepted/dismissed Cloud records remain unchanged and outside
+the new-candidate queue. Manual restoration pins the local classification so
+subsequent worker or explicit reassessment does not hide it again.
+
+Rules endpoints require a Vibe app:content bearer token validated against Cloud
+editor permissions on every request. No service key is sent to the browser.
+Source additions supplement global rules; typed output and evidence checks
+remain server-enforced. Prompts cannot authorize publication or fabricate
+coordinates. Existing already-processed candidates can be selected for explicit
+reassessment rather than silently spending calls on every old record.

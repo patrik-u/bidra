@@ -1,3 +1,4 @@
+import AIRules, {rulesRequest, decisionLabel, type Assessment} from './AIRules'
 import { useEffect, useState } from 'react'
 import { vibeClient, vibeOrigin } from '../lib/vibe'
 import type { InitiativeDraft } from '../content/initiative'
@@ -18,6 +19,7 @@ function ReviewImage({path,title}:{path:string;title:string}) {
   return src?<img src={src} alt={`AI-illustration för ${title}`} loading="lazy"/>:<p>Bildförhandsvisningen kunde inte laddas ännu.</p>
 }
 export default function IntakeQueue() {
+  const [assessments,setAssessments]=useState<Record<string,Assessment>>({}),[filter,setFilter]=useState('all')
   const [items,setItems]=useState<Candidate[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false),[offset,setOffset]=useState(0),[hasMore,setHasMore]=useState(false)
   async function load(){try{const page=await request(`${base}?templateId=${type}&offset=${offset}`);setItems(page.documents);setHasMore(page.hasMore);setError('')}catch(e){setError(e instanceof Error?e.message:'Kunde inte läsa kön.')}}
   useEffect(()=>{void load()},[offset])
@@ -28,12 +30,14 @@ export default function IntakeQueue() {
     if(accept)location.assign(`/cloud-content?entity=${encodeURIComponent(entityId)}`)
     else await load()
   }catch(e){setError(e instanceof Error?e.message:'Kunde inte spara.')}finally{setBusy(false)}}
-  const fresh=items.filter(item=>item.payload.state==='new')
-  return <section className="intake-queue"><details><summary>Automatiskt insamlade förslag · {fresh.length} på denna sida</summary><p>RSS-källorna kontrolleras dagligen. Förslagen är privata och kan vara nyheter eller redan avslutade aktiviteter. Inget publiceras automatiskt.</p><p><a href="https://console.vibecloud.se/my-apps" target="_blank" rel="noopener noreferrer">Konfigurera appens OpenAI-tjänst i Vibe Cloud</a></p>
+  const fresh=items.filter(item=>item.payload.state==='new' && (filter==='all' ? assessments[item.entityId]?.decision!=='rejected' : assessments[item.entityId]?.decision===filter))
+  return <section className="intake-queue"><AIRules candidates={items} onAssessments={setAssessments}/><details><summary>Automatiskt insamlade förslag · {fresh.length} på denna sida</summary><p>RSS-källorna kontrolleras dagligen. Förslagen är privata och kan vara nyheter eller redan avslutade aktiviteter. Inget publiceras automatiskt.</p><p><a href="https://console.vibecloud.se/my-apps" target="_blank" rel="noopener noreferrer">Konfigurera appens OpenAI-tjänst i Vibe Cloud</a></p>
+    <label>Visa förslag <select value={filter} onChange={event=>setFilter(event.target.value)}><option value="all">Granskningskö</option><option value="recommended">Rekommenderade</option><option value="uncertain">Osäkra</option><option value="rejected">Bortsorterade av AI</option></select></label>
     {error&&<p role="alert">{error}</p>}
     {!fresh.length&&<p>Inga nya förslag på denna sida. Nya källfynd dyker upp här efter nästa insamling.</p>}
     {fresh.map(item=><article className="intake-candidate" key={item.entityId}>
       {item.payload.image&&<figure><ReviewImage path={item.payload.image} title={item.payload.title}/><figcaption>AI-genererad illustration – granska motivet</figcaption></figure>}
+      {assessments[item.entityId]&&<div><strong>{decisionLabel(assessments[item.entityId].decision)} · regelversion {assessments[item.entityId].version}</strong><p>{assessments[item.entityId].reason}</p><blockquote>{assessments[item.entityId].evidence}</blockquote>{assessments[item.entityId].decision==='rejected'&&<button onClick={()=>void rulesRequest({action:'restore',id:item.entityId}).then(data=>setAssessments(data.assessments)).catch(error=>setError(error.message))}>Återställ till granskningskön</button>}</div>}
       <h3>{item.payload.title}</h3><p>{item.payload.sourceName} · Hämtat {new Date(item.payload.fetchedAt).toLocaleDateString('sv-SE')}</p>
       <a href={item.payload.url} target="_blank" rel="noopener noreferrer">Läs originalkällan ↗</a>
       <p>{item.payload.proposal.summary || 'Sammanfattning saknas – AI har inte bearbetat förslaget.'}</p>
