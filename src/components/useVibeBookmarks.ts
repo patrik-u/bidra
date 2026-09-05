@@ -12,6 +12,7 @@ export function useVibeBookmarks(notify: (message: string) => void) {
   const [busy, setBusy] = useState(true)
   const [error, setError] = useState('')
   const [localCount, setLocalCount] = useState(0)
+  const [popupFallback, setPopupFallback] = useState(false)
   const lock = useRef(false)
   const refresh = async () => {
     if (lock.current) return
@@ -33,9 +34,20 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     window.addEventListener('focus', focus)
     return () => window.removeEventListener('focus', focus)
   }, [])
-  const login = async () => {
-    try { await (await vibeClient()).switchAccount(['profile:read', 'storage'], { redirect: true }) }
-    catch { setError('Kunde inte starta inloggningen. Försök igen.') }
+  const login = async (redirect = false) => {
+    if (lock.current) return
+    const popup = redirect ? undefined : window.open('about:blank', 'bidra-login', 'popup=yes,width=520,height=740,resizable=yes,scrollbars=yes')
+    if (!redirect && !popup) { setPopupFallback(true); return }
+    lock.current = true; setBusy(true); setError(''); setPopupFallback(false)
+    let completed = false
+    try {
+      await (await vibeClient()).switchAccount(['profile:read', 'storage'], { redirect, popup: popup ?? undefined })
+      completed = true
+    } catch {
+      setError('Inloggningen slutfördes inte. Du kan försöka igen eller fortsätta i samma flik.')
+      setPopupFallback(true)
+    } finally { popup?.close(); lock.current = false; setBusy(false) }
+    if (completed) { await refresh(); notify('Du är inloggad på Bidra.') }
   }
   const logout = async () => {
     if (lock.current) return
@@ -70,5 +82,5 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     } catch (e) { setError(e instanceof Error ? e.message : 'Kunde inte kopiera.') }
     finally { lock.current = false; setBusy(false) }
   }
-  return { saved, profile, busy, error, localCount, login, logout, toggleSave, importLocal, refresh }
+  return { saved, profile, busy, error, localCount, popupFallback, login, logout, toggleSave, importLocal, refresh }
 }
