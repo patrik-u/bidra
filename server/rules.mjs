@@ -1,6 +1,6 @@
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { sources } from './sources.mjs'
+import { collectionSources as sources } from './collection-sources.mjs'
 
 export const defaults = {
   general: 'Bidrakartan visar konkreta, aktuella möjligheter att ge en gåva eller bidra aktivt med sin tid. Ämnesrelevans räcker inte. Utgå endast från belagda uppgifter. Vid otillräckligt underlag: osäker.',

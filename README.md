@@ -1,25 +1,27 @@
-# Bidra
+# Bidrakartan
 
-Svensk tjänst för att hitta sätt att bidra till människor, djur och natur. Vit bas och klarrosa huvudfärg (symbol #f50070, knappar #e60063).
+Svensk tjänst för att hitta konkreta sätt att ge en gåva eller bidra med tid till människor, djur och natur. Produktion: https://bidrakartan.se.
 
 ## Teknik
 
-TanStack Start, React och TypeScript förrenderar gränssnittet. Ett Cloudflare Worker-API hämtar publicerade initiativ från D1 (SQLite). Lista, karta, sökning och WebMCP använder samma register. MapLibre laddas separat med uttryckligt paketerad worker; bakgrundskartan kommer från CARTO/OpenStreetMap.
+TanStack Start, React och TypeScript förrenderar gränssnittet. En Node-server på Fly.io serverar sidorna och hämtar publicerat Content från Vibe Cloud. Lista, karta och sökning använder samma katalog. MapLibre visar CARTO/OpenStreetMap med kategoriikoner; osäkra geografiska platser får ingen påhittad kartnål.
 
-Redaktionen på /admin hanterar utkast, granskning, publicering, arkivering och revisionshistorik. Utkast och publicerad version är separata. Versionskontroll och atomiska transaktioner skyddar mot samtidiga överskrivningar. Sites autentiserar besökaren och servern kontrollerar redaktörens ADMIN_EMAIL på varje skyddad begäran.
+Vibe Cloud hanterar Vibe-inloggning, kontots sparade initiativ, appens publicerade Content, redaktörsbehörighet och krypterad OpenAI-konfiguration med anropsgränser. Bidrakartan definierar sina egna Content-typer. Cloud innehåller ingen speciallogik för organisationer, insamling eller kategorisering.
+
+Bidrakartans Fly-server äger källadaptrar, AI-kurering, schemaläggning, lokal granskningskö, bildfiler och sökindex. `/data` är en beständig volym som också måste säkerhetskopieras; en export från Cloud täcker inte allt. Den äldre Cloudflare/D1-implementationen finns kvar för historik och tester men kör inte den nuvarande produktionen.
 
 ## Lokal utveckling
 
-Kör npm ci, npm run build och npm run db:local. Starta sedan npm run dev:api och npm run dev i varsin terminal. Port 3000 visar gränssnittet och vidarebefordrar API-anrop till port 8787. Redaktionen kräver Sites identitetsheaders; integrationstester använder uttryckliga testidentiteter i en isolerad databas. Ingen autentiseringsgenväg finns i produktionskoden.
+Node 22 eller senare krävs för serverns SQLite-stöd. Kör `npm ci` och `npm run build`. Starta `npm run dev:server` och `npm run dev` i varsin terminal. Gränssnittet på port 3000 vidarebefordrar API-anrop till port 8080. Lokala data ligger i ignorerade `.local-data`; bakgrundsjobb är avstängda. Vibe-inloggning kräver en registrerad callback/origin; produktionsinloggning kan inte automatiskt återanvändas på localhost. Ingen lokal redaktörsgenväg finns.
 
 ## Kontroll och drift
 
-Kör npm run typecheck, npm test, npm run build och npm run test:api.
+Kör `npm run typecheck`, `npm test`, `npm run test:server` och `npm run build`. Äldre Worker-registret har separata tester med `npm run test:api`.
 
-Bygget ger förrenderade sidor i dist/client och ett API i dist/server/index.js. Sites-paketeringen inkluderar Drizzle-migrationer. GitHub lagrar koden; Sites kör webbplatsen och databasen. GitHub-push publicerar inte automatiskt sajten.
+Publicera med `fly deploy --config fly.toml --remote-only --ha=false`. Produktion använder en enda alltid startad instans och sin befintliga volym. GitHub-push publicerar inte automatiskt. Lägg aldrig tjänstetoken eller OpenAI-nyckel i Git; Fly hanterar serverhemligheter och Cloud hanterar appens OpenAI-nyckel.
 
-Databasschemat finns i db/schema.ts. Generera schemaändringar med npm run db:generate och ändra inte redan tillämpade migrationer. Produktionsvärden anges privat i Sites. wrangler.jsonc är endast lokal konfiguration.
+Cloud-registreringen exporteras med `node scripts/export-cloud-registration.mjs`. Registreringens Content-typer, servicebehörigheter och logotyp måste uppdateras i Cloud när dessa ändras. Ändra inte redan registrerade versionerade scheman; lägg till en ny typversion.
 
-Sökningen är regelbaserad. Bokmärken kan sparas på enheten eller på ett Vibe-konto för åtkomst från flera enheter. Se [Vibe-kontokopplingen](docs/VIBE-KONTO.md). Automatisk insamling, AI-sökning, externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
+Fem källor kontrolleras normalt var sjätte timme; arbetaren kontrollerar kön varje timme. Källstödda AI-rekommendationer publiceras automatiskt. Osäkra och bortsorterade förslag finns i redaktionen. Sökningen kombinerar ordmatchning med semantisk likhet och fungerar med vanlig sökning vid kvot eller tjänstefel. Bokmärken kan sparas på enheten eller Vibe-kontot. Externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
 
-Se [redaktion och drift](docs/REDAKTION.md), [MVP och färdplan](docs/MVP.md), [bildkällor](docs/ASSETS.md) och [automatisk bildgenerering](docs/BILDGENERERING.md).
+Se [automatisk insamling och sökning](docs/AUTOMATISK-INSAMLING.md), [bilder](docs/BILDGENERERING.md) och [Vibe-kontokopplingen](docs/VIBE-KONTO.md). Äldre färdplaner beskriver tidigare skeden av projektet.

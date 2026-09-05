@@ -3,5 +3,8 @@
   "createTypes": [
     "bidrakartan.discovery.v1"
   ],
-  "ai": true
+  "ai": true,
+  "publishTypes": [
+    "bidrakartan.opportunity.v1"
+  ]
 }

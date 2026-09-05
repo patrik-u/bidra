@@ -1,7 +1,8 @@
 import { rulesEndpoint } from './rules-api.mjs'
+import {startSemantic,semanticEndpoint} from './semantic.mjs'
 import { imageStore, imageEndpoint, startInitiativeImages } from './initiative-images.mjs'
 import { publicOrganizations, withOrganizations, startOrganizationChecks, organizationsEndpoint } from './organizations.mjs'
-import { startIntake } from './intake.mjs'
+import { startCollection, collectionEndpoint } from './collection.mjs'
 import { createServer } from 'node:http'
 import { readFile, stat } from 'node:fs/promises'
 import { resolve, extname, sep } from 'node:path'
@@ -11,22 +12,25 @@ const cloud = process.env.VIBE_ORIGIN || 'https://console.vibecloud.se'
 const contentUrl = new URL('/api/public/apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=vibe.initiative.v1', cloud)
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8' }
 
-export async function catalog(fetcher = fetch) {
+export async function catalog(fetcher = fetch, includeCollected = true) {
   const initiatives = []
+  for(const type of includeCollected?['vibe.initiative.v1','bidrakartan.opportunity.v1']:['vibe.initiative.v1']){
   for (let offset = 0; offset < 10000; offset += 50) {
-    const url = new URL(contentUrl); url.searchParams.set('offset', String(offset))
+    const url = new URL(contentUrl); url.searchParams.set('templateId',type);url.searchParams.set('offset', String(offset))
     const response = await fetcher(url, { signal: AbortSignal.timeout(12000) })
     if (!response.ok) throw new Error('Cloud content unavailable')
     const page = await response.json()
     if (!Array.isArray(page.documents) || typeof page.hasMore !== 'boolean') throw new Error('Invalid content response')
     for (const document of page.documents) {
       const item = document.payload
-      if (document.templateId !== 'vibe.initiative.v1' || !item || !['natur','manniskor','djur','klimat','hav','barn'].includes(item.category)) throw new Error('Invalid initiative')
+      if (document.templateId !== type || !item || !['natur','manniskor','djur','klimat','hav','barn'].includes(item.category)) throw new Error('Invalid initiative')
       initiatives.push({ ...item, id: document.entityId, keywords: item.keywords ?? [] })
     }
-    if (!page.hasMore) return { initiatives: withOrganizations(initiatives,await publicOrganizations(fetcher)) }
+    if (!page.hasMore) break
+    if(offset===9950)throw new Error('Catalog pagination limit reached')
   }
-  throw new Error('Catalog pagination limit reached')
+  }
+  return { initiatives: withOrganizations(initiatives,await publicOrganizations(fetcher)) }
 }
 
 async function visibleCatalog(){const data=await catalog();return {initiatives:(await imageStore()).apply(data.initiatives)}}
@@ -40,7 +44,9 @@ export const server = createServer(async (request, response) => {
   response.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups')
   try {
     const url = new URL(request.url, 'http://localhost')
+    if (url.pathname === '/api/search') return await semanticEndpoint(request,send,async()=>(await catalog()).initiatives)
     if (url.pathname === '/api/editor/rules') return await rulesEndpoint(request, send)
+    if (url.pathname === '/api/editor/collection') return await collectionEndpoint(request,send)
     if (url.pathname === '/api/editor/images') return await imageEndpoint(request,send,async()=>(await catalog()).initiatives)
     if (url.pathname === '/api/editor/organizations') return await organizationsEndpoint(request, send)
     if (!['GET','HEAD'].includes(request.method)) return send(405, { error: 'Method not allowed' })
@@ -63,6 +69,7 @@ export const server = createServer(async (request, response) => {
 })
 if (process.env.NODE_ENV !== 'test') server.listen(Number(process.env.PORT || 8080), '0.0.0.0')
 
-if (process.env.NODE_ENV !== 'test') void startIntake().catch(error => console.error('Intake startup failed:', error.message))
+if (process.env.NODE_ENV !== 'test') void startCollection(async()=>(await catalog(fetch,false)).initiatives).catch(error => console.error('Collection startup failed:', error.message))
 if (process.env.NODE_ENV !== 'test') void startOrganizationChecks().catch(error => console.error('Organization startup failed:', error.message))
 if (process.env.NODE_ENV !== 'test') void startInitiativeImages(async()=>(await catalog()).initiatives).catch(error=>console.error('Image startup failed:',error.message))
+if (process.env.NODE_ENV !== 'test') void startSemantic(async()=>(await catalog()).initiatives).catch(error=>console.error('Search startup failed:',error.message))

@@ -13,6 +13,7 @@ async function request(body?:unknown){
 function Preview({path}:{path:string}){
   const [src,setSrc]=useState('')
   useEffect(()=>{let alive=true,objectUrl='';void(async()=>{
+    if(new URL(path,location.origin).origin!==location.origin){if(alive)setSrc(path);return}
     const client=await vibeClient();const response=await client.authorizedFetch(new URL(path,location.origin),await client.connect('app:content'))
     if(!response.ok)throw new Error('preview');objectUrl=URL.createObjectURL(await response.blob());if(alive)setSrc(objectUrl);else URL.revokeObjectURL(objectUrl)
   })().catch(()=>{});return()=>{alive=false;if(objectUrl)URL.revokeObjectURL(objectUrl)}},[path])
@@ -29,7 +30,7 @@ export default function InitiativeImages(){
     try{setState(await request({action,...(item?{id:item.id,fingerprint:item.fingerprint,version:state?.choices.find(choice=>choice.id===item.id)?.version||0,instructions,jobId}:{})}));setMessage(action==='generate'?'Bilden ligger i kön. Nuvarande bild visas tills den nya är klar.':'Bildvalet är sparat.')}catch(error){setMessage(error instanceof Error?error.message:'Kunde inte ändra bilden.')}finally{setBusy(false)}
   }
   const pending=state?.jobs.filter(job=>['pending','running'].includes(job.status)).length||0
-  return <section className="initiative-images"><p className="results-eyebrow">REDAKTION</p><h1>Bilder</h1><p>Publicerade initiativ utan bild får en egen AI-illustration. Nya initiativ upptäcks varje timme. Bilderna sparas och återanvänds.</p>
+  return <section className="initiative-images"><p className="results-eyebrow">REDAKTION</p><h1>Bilder</h1><p>Källans bildförhandsvisning prioriteras. Om en sådan saknas används befintliga bilder eller en AI-illustration. Manuella bildval har alltid företräde.</p>
     <p>{state?`${state.items.filter(item=>item.image).length} av ${state.items.length} initiativ har bild · ${pending} bildjobb i kö eller under arbete`:'Läser bilder…'}</p>
     <p className="hint">Illustrationerna visar inte organisationernas verkliga verksamhet. Generering och omgenerering använder appens bildanrop i <a href="https://console.vibecloud.se/my-apps" target="_blank" rel="noopener noreferrer">Vibe Cloud</a>. Att välja en tidigare bild kostar inga nya anrop.</p>
     {state?.pause.until&&Date.parse(state.pause.until)>Date.now()&&<div role="status"><p>{state.pause.message}</p><button disabled={busy} onClick={()=>void change('resume')}>Fortsätt kön</button></div>}

@@ -82,7 +82,7 @@ export default function InitiativeMap({ items, selected, hovered, onSelect, save
         el.style.setProperty('--marker-color', categories.find(c => c.id === item.category)!.color)
         const dot = document.createElement('span'); dot.className = 'marker-icon'; targets.push({ element: dot, item })
         const label = document.createElement('span'); label.className = 'marker-label'
-        label.textContent = item.organization === 'Naturarvet' ? item.region.split(',')[0] : item.organization.replace('Stockholms ', '')
+        label.textContent = item.title
         el.append(dot, label)
         el.addEventListener('click', () => { dismiss(); onSelectRef.current(item.id) })
         const show = () => {

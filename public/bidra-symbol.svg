@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
   <title>Bidra – ett hjärta i en sluten loop</title>
-  <path d="M128 68C95 6 30 16 26 74C22 129 73 186 108 211C120 221 133 223 145 211C192 172 230 120 230 78C230 19 170 12 128 68C104 100 99 125 111 139C124 153 144 145 146 126C150 104 141 86 128 68Z" stroke="#f50070" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="128" cy="128" r="128" fill="#f50070"/>
+  <path transform="translate(38 39) scale(.7)" d="M128 68C95 6 30 16 26 74C22 129 73 186 108 211C120 221 133 223 145 211C192 172 230 120 230 78C230 19 170 12 128 68C104 100 99 125 111 139C124 153 144 145 146 126C150 104 141 86 128 68Z" stroke="white" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

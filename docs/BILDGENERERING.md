@@ -1,13 +1,24 @@
 # Bilder för publicerade initiativ
 
-Alla publicerade initiativ utan bild upptäcks varje timme, oavsett om de
-kommer från organisationsregistret, RSS eller har skapats för hand.
+Bildordningen är: manuellt bildval, innehållets egen bild, officiell
+sidförhandsvisning (`og:image`), och sist en märkt AI-illustration.
+Officiella förhandsvisningar kontrolleras ungefär varje vecka, inom det
+timvisa bildjobbet och endast från granskade organisations-/källursprung.
+De laddas från källans server/CDN med källangivelse och utan inloggningsheader.
+Ingen generell rätt att återpublicera eller återlicensiera bilder påstås.
+En förhandsvisning kan vara en logotyp, inte nödvändigtvis ett fotografi.
+Trasiga bilder får en enkel organisationsplatshållare. Unsplash är inte
+integrerat i denna version.
+
+Återstående publicerade initiativ utan bild upptäcks varje timme, oavsett om de
+kommer från organisationsregistret, insamlingen eller har skapats för hand.
 Bildkön arbetar med högst två samtidiga anrop till appens befintliga
 OpenAI-tjänst i Vibe Cloud. Samma månadsgräns gäller som för RSS-bilder.
 
 Motivet bygger på initiativets rubrik, organisation, kategori, beskrivning,
 bidragsmöjlighet och geografi. Bildreglerna under AI-regler används också.
-Jobbet använder inte ett extra textanrop. Bilderna ska vara illustrationer
+Jobbet använder inte ett extra textanrop. Grundmotivet eftersträvar vardaglig,
+återhållsam miljö och naturligt ljus, utan filmisk glans. Bilderna ska vara illustrationer
 av ämnet, inte påstådda foton från organisationens verkliga verksamhet.
 Kort och detaljvy märker genererade bilder som AI-illustrationer.
 

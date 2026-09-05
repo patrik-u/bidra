@@ -11,6 +11,8 @@ WORKDIR /app
 ENV NODE_ENV=production PORT=8080
 COPY --from=build /app/dist/client ./dist/client
 COPY server ./server
+COPY cloud/opportunity-schema.mjs ./cloud/opportunity-schema.mjs
+COPY public/geo/places.json ./public/geo/places.json
 COPY --from=build /app/node_modules ./node_modules
 
 EXPOSE 8080

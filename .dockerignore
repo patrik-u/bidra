@@ -6,4 +6,5 @@ dist
 .dev.vars
 .wrangler
 .tanstack
+.local-data
 docs

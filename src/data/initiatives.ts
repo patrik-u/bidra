@@ -16,6 +16,8 @@ export type Initiative = {
   source: string
   donate: string
   image?: string
+  imageCredit?: string
+  imageFallback?: string
   sourceReadAt?: string
   keywords: string[]
   giving: ('pengar' | 'tid')[]
