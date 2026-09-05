@@ -5,7 +5,7 @@ och sparande på enheten fungerar utan Vibe-konto. Inloggningen går till
 `https://console.vibecloud.se` i samma flik och återvänder till
 `/vibe-callback/`. Returadressen undviker Sites reserverade `/callback`.
 
-SDK 0.1.3 finns som versionslåst paket i `vendor/`. Det hanterar PKCE, kontroll
+SDK 0.1.4 finns som versionslåst paket i `vendor/`. Det hanterar PKCE, kontroll
 av signerad identitet, åtkomsttoken och roterande förnyelsetoken. Bidra hanterar
 inte lösenord eller identitetsnycklar. SDK:s åtkomsttoken ligger per flik,
 förnyelsetoken i webbläsarens lokala lagring. Detta är samma webbläsarmodell
@@ -44,4 +44,6 @@ Vibe-inloggning gör inte webbplatsen offentlig.
 Lokalt kan `VITE_VIBE_ORIGIN` väljas vid bygg/start. Lägg motsvarande Bidra-origin
 i Clouds `VIBE_BIDRA_ORIGINS`; använd olika portar för Cloud och Bidra.
 
-Popupen �ppnas direkt vid klicket och �teranv�nds av SDK:t. Bidra kontrollerar returmeddelandets origin, f�nster och state genom SDK:t. Om f�nstret blockeras eller fl�det avbryts erbjuds ett uttryckligt alternativ i samma flik. Webbl�saren avg�r om ett separat f�nster eller en flik visas, s�rskilt p� mobil.
+Popupen öppnas direkt vid klicket och återanvänds av SDK:t. Bidra kontrollerar returmeddelandets origin, fönster och state genom SDK:t. Om fönstret blockeras eller flödet avbryts erbjuds ett uttryckligt alternativ i samma flik. Webbläsaren avgör om ett separat fönster eller en flik visas, särskilt på mobil.
+
+Popupreturen accepterar båda varianterna av avslutande snedstreck. Ett separat, slumpmässigt namngivet same-origin-meddelande gör att ursprungsfliken kan slutföra PKCE-utbytet även när webbläsaren isolerar fönstren. Endast engångskoden skickas; kontots token stannar i ursprungsfliken. Användaren kan avbryta väntan från Bidra.

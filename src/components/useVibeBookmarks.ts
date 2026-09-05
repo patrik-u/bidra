@@ -13,6 +13,8 @@ export function useVibeBookmarks(notify: (message: string) => void) {
   const [error, setError] = useState('')
   const [localCount, setLocalCount] = useState(0)
   const [popupFallback, setPopupFallback] = useState(false)
+  const [loginPending, setLoginPending] = useState(false)
+  const loginController = useRef<AbortController | null>(null)
   const lock = useRef(false)
   const refresh = async () => {
     if (lock.current) return
@@ -38,15 +40,20 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     if (lock.current) return
     const popup = redirect ? undefined : window.open('about:blank', 'bidra-login', 'popup=yes,width=520,height=740,resizable=yes,scrollbars=yes')
     if (!redirect && !popup) { setPopupFallback(true); return }
+    const controller = new AbortController()
+    loginController.current = controller
+    setLoginPending(true)
     lock.current = true; setBusy(true); setError(''); setPopupFallback(false)
     let completed = false
     try {
-      await (await vibeClient()).switchAccount(['profile:read', 'storage'], { redirect, popup: popup ?? undefined })
+      await (await vibeClient()).switchAccount(['profile:read', 'storage'], { redirect, popup: popup ?? undefined, signal: controller.signal })
       completed = true
     } catch {
-      setError('Inloggningen slutfördes inte. Du kan försöka igen eller fortsätta i samma flik.')
-      setPopupFallback(true)
-    } finally { popup?.close(); lock.current = false; setBusy(false) }
+      if (!controller.signal.aborted) {
+        setError('Inloggningen slutfördes inte. Du kan försöka igen eller fortsätta i samma flik.')
+        setPopupFallback(true)
+      }
+    } finally { try { popup?.close() } catch { /* Browser may isolate the popup. */ } loginController.current = null; setLoginPending(false); lock.current = false; setBusy(false) }
     if (completed) { await refresh(); notify('Du är inloggad på Bidra.') }
   }
   const logout = async () => {
@@ -82,5 +89,5 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     } catch (e) { setError(e instanceof Error ? e.message : 'Kunde inte kopiera.') }
     finally { lock.current = false; setBusy(false) }
   }
-  return { saved, profile, busy, error, localCount, popupFallback, login, logout, toggleSave, importLocal, refresh }
+  return { saved, profile, busy, error, localCount, popupFallback, loginPending, cancelLogin: () => loginController.current?.abort(), login, logout, toggleSave, importLocal, refresh }
 }
