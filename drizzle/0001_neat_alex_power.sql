@@ -1,0 +1,1 @@
+ALTER TABLE `registry_entries` ADD `mutation_id` text DEFAULT '' NOT NULL;

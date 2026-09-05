@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { searchInitiatives } from '../data/initiatives'
+import type { Initiative } from '../data/initiatives'
 
 type ModelContext = {
   registerTool: (tool: {
@@ -11,7 +12,9 @@ type ModelContext = {
 }
 declare global { interface Document { readonly modelContext?: ModelContext } }
 
-export function useWebMCP(searchAll: (query: string) => void) {
+export function useWebMCP(searchAll: (query: string) => void, catalog: Initiative[]) {
+  const catalogRef = useRef(catalog)
+  catalogRef.current = catalog
   const action = useRef(searchAll)
   action.current = searchAll
   useEffect(() => {
@@ -28,7 +31,7 @@ export function useWebMCP(searchAll: (query: string) => void) {
           if (!input || typeof input !== 'object' || !('query' in input) || typeof input.query !== 'string' || input.query.length > 300 || Object.keys(input).some(key => key !== 'query')) throw new Error('Ange endast query som en text med högst 300 tecken.')
           const query = input.query.trim()
           flushSync(() => action.current(query))
-          const results = searchInitiatives(query)
+          const results = searchInitiatives(query, 'all', 'all', false, catalogRef.current)
           return { count: results.length, initiatives: results.map(({ id, title, organization, region, source }) => ({ id, title, organization, region, source })) }
         },
       }, { signal: lifecycle.signal })).catch(() => { /* Optional browser capability; the interface remains usable. */ })

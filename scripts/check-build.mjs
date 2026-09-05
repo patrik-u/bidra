@@ -9,4 +9,5 @@ const workerCode = await readFile(new URL(`../dist/client/assets/${worker}`, imp
 assert.ok(workerCode.length > 10000, 'MapLibre worker bundle is unexpectedly empty.')
 assert.ok(!workerCode.includes('./maplibre-gl-shared.mjs'), 'Worker references an unbundled sibling file.')
 await access(new URL('../dist/client/index.html', import.meta.url))
+await access(new URL('../dist/client/admin/index.html', import.meta.url))
 console.log('Public HTML and self-contained MapLibre worker verified.')

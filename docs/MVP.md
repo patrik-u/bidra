@@ -2,6 +2,8 @@
 
 Datum: 5 september 2026. Namnet är **Bidra**. Svenska är primärt språk och Sverige är första geografiska område. Den tidigare benämningen aidmap är ersatt.
 
+**Uppdatering:** Hallonrosa (#b94264) är nu huvudfärg med vit bas. D1-databas, Worker-API och redaktion för utkast, granskning, publicering, arkivering och historik är implementerade. Se [aktuell teknisk beskrivning](../README.md) och [redaktionsflöde](REDAKTION.md). Avsnitten nedan beskriver den första prototypen och den bredare målbilden; nästa innehållssteg är att granska det importerade urvalet och utöka registret.
+
 ## Syfte
 
 Göra det lättare för någon som vill bidra till allmännytta att hitta en konkret, begriplig väg från hjärtefråga till handling. Besökaren ska förstå vad arbetet gäller, var det hör hemma, hur en gåva används enligt organisationen och vilka källor som ligger bakom informationen.

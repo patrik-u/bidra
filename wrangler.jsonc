@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bidra-local",
+  "main": "server/worker.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": { "directory": "dist/client", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "d1_databases": [{ "binding": "DB", "database_name": "bidra-local", "database_id": "local-bidra", "migrations_dir": "drizzle" }],
+  "vars": { "ADMIN_EMAIL": "editor@example.invalid" }
+}

@@ -13,6 +13,7 @@ export type Initiative = {
   source: string
   donate: string
   image?: string
+  sourceReadAt?: string
   keywords: string[]
   giving: ('pengar' | 'tid')[]
 }
@@ -92,12 +93,12 @@ export function normalize(value: string) {
 }
 
 const stopWords = new Set(['jag', 'vill', 'att', 'och', 'eller', 'for', 'till', 'med', 'som', 'dar', 'det', 'den', 'ett', 'min', 'mitt', 'hjalpa', 'hjalp', 'stodja', 'stod', 'bidra', 'skanka', 'pengar', 'sverige', 'svenska'])
-export function searchInitiatives(query: string, category: Category | 'all' = 'all', giving = 'all', localOnly = false): Initiative[] {
+export function searchInitiatives(query: string, category: Category | 'all' = 'all', giving = 'all', localOnly = false, catalog: Initiative[] = initiatives): Initiative[] {
   const terms = normalize(query).split(/[^a-z0-9]+/).filter(term => term.length > 1 && !stopWords.has(term))
   const places = ['stockholm', 'skelleftea', 'grasö', 'graso', 'are', 'jamtland', 'halland', 'gallared', 'vasterbotten', 'uppland', 'uppsala', 'goteborg', 'malmo', 'umea', 'norrland']
   const requestedPlaces = terms.filter(term => places.includes(term))
   const requestedCauses = categories.filter(cat => terms.some(term => cat.words.some(word => term.startsWith(normalize(word)))))
-  const filtered = initiatives.filter(item => {
+  const filtered = catalog.filter(item => {
     const location = normalize([item.region, ...item.keywords].join(' '))
     return (category === 'all' || item.category === category) && (giving === 'all' || item.giving.some(mode => mode === giving)) && (!localOnly || item.scope === 'local')
       && (!requestedPlaces.length || item.scope === 'national' || requestedPlaces.some(place => location.includes(place)))

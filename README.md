@@ -1,28 +1,25 @@
 # Bidra
 
-En svensk prototyp för att hitta konkreta sätt att bidra till människor, djur och natur. Byggd med TanStack Start, React, TypeScript och MapLibre GL JS.
+Svensk tjänst för att hitta sätt att bidra till människor, djur och natur. Vit bas och hallonrosa huvudfärg (#b94264).
 
-Se [MVP-specifikationen](docs/MVP.md) för mål, geografisk modell, källhantering och fortsatta etapper.
+## Teknik
 
-```bash
-npm install
-npm run dev
-```
+TanStack Start, React och TypeScript förrenderar gränssnittet. Ett Cloudflare Worker-API hämtar publicerade initiativ från D1 (SQLite). Lista, karta, sökning och WebMCP använder samma register. MapLibre laddas separat med uttryckligt paketerad worker; bakgrundskartan kommer från CARTO/OpenStreetMap.
 
-Utvecklingsservern använder port 3000. Initiativ finns i `src/data/initiatives.ts`, gränssnittet i `src/components/Bidra.tsx` och kartan i `src/components/InitiativeMap.tsx`.
+Redaktionen på /admin hanterar utkast, granskning, publicering, arkivering och revisionshistorik. Utkast och publicerad version är separata. Versionskontroll och atomiska transaktioner skyddar mot samtidiga överskrivningar. Sites autentiserar besökaren och servern kontrollerar redaktörens ADMIN_EMAIL på varje skyddad begäran.
 
-Kontrollera och bygg:
+## Lokal utveckling
 
-```bash
-npm test
-npm run typecheck
-npm run build
-```
+Kör npm ci, npm run build och npm run db:local. Starta sedan npm run dev:api och npm run dev i varsin terminal. Port 3000 visar gränssnittet och vidarebefordrar API-anrop till port 8787. Redaktionen kräver Sites identitetsheaders; integrationstester använder uttryckliga testidentiteter i en isolerad databas. Ingen autentiseringsgenväg finns i produktionskoden.
 
-Bygget förrenderar startsidan i `dist/client/`. Sites publicerar dessa statiska filer; `.openai/hosting.json` anger kopplingen till webbplatsen. `dist/server/` används för förrenderingen och ingår inte i den statiska publiceringen.
+## Kontroll och drift
 
-Ingen API-nyckel behövs. Kartan hämtar en extern CARTO/OpenStreetMap-bakgrund och kräver WebGL. Sökningen är lokal och bygger på ord, kategorier och ett litet ortregister. Sparade initiativ finns bara på den egna enheten.
+Kör npm run typecheck, npm test, npm run build och npm run test:api.
 
-TanStack Intent är konfigurerat för `@tanstack/*`. Se AGENTS.md för laddning av versionsbundna agentfärdigheter. Ingen AI-insamling, vektordatabas, betalning eller uppföljning av faktiska donationer har implementerats ännu.
+Bygget ger förrenderade sidor i dist/client och ett API i dist/server/index.js. Sites-paketeringen inkluderar Drizzle-migrationer. GitHub lagrar koden; Sites kör webbplatsen och databasen. GitHub-push publicerar inte automatiskt sajten.
 
-Fotografierna är illustrativa och licensierade via Unsplash. Se [bildkällor](docs/ASSETS.md).
+Databasschemat finns i db/schema.ts. Generera schemaändringar med npm run db:generate och ändra inte redan tillämpade migrationer. Produktionsvärden anges privat i Sites. wrangler.jsonc är endast lokal konfiguration.
+
+Sökningen är regelbaserad och bokmärken sparas på den egna enheten. Automatisk insamling, AI-sökning, externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
+
+Se [redaktion och drift](docs/REDAKTION.md), [MVP och färdplan](docs/MVP.md) och [bildkällor](docs/ASSETS.md).
