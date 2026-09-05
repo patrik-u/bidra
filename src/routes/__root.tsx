@@ -19,6 +19,7 @@ export const Route = createRootRoute({
       { name: 'theme-color', content: '#ffffff' },
     ],
     links: [
+      { rel: 'icon', type: 'image/svg+xml', href: '/bidra-symbol.svg' },
       {
         rel: 'stylesheet',
         href: appCss,

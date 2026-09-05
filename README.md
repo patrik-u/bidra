@@ -1,6 +1,6 @@
 # Bidra
 
-Svensk tjänst för att hitta sätt att bidra till människor, djur och natur. Vit bas och hallonrosa huvudfärg (#b94264).
+Svensk tjänst för att hitta sätt att bidra till människor, djur och natur. Vit bas och klarrosa huvudfärg (symbol #f50070, knappar #e60063).
 
 ## Teknik
 

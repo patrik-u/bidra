@@ -46,7 +46,7 @@ export default function RegistryAdmin() {
     } catch (e) { setError(e instanceof Error ? e.message : 'Åtgärden misslyckades.') }
     finally { setBusy(false) }
   }
-  return <main className="editor-page"><header className="editor-header"><a href="/" className="editor-brand">bidra.</a><span>Redaktion</span><a href="/">Till initiativen ↗</a></header><div className="editor-intro"><span className="eyebrow">ETT OMSORGSFULLT URVAL</span><h1>Ge initiativen plats.</h1><p>Spara ett utkast, kontrollera källorna och publicera när uppgifterna är redo.</p></div>
+  return <main className="editor-page"><header className="editor-header"><a href="/" className="editor-brand"><img src="/bidra-symbol.svg" alt="" width="44" height="44" />bidra.</a><span>Redaktion</span><a href="/">Till initiativen ↗</a></header><div className="editor-intro"><span className="eyebrow">ETT OMSORGSFULLT URVAL</span><h1>Ge initiativen plats.</h1><p>Spara ett utkast, kontrollera källorna och publicera när uppgifterna är redo.</p></div>
     {error && <div className="editor-error" role="alert">{error}<button onClick={() => window.location.reload()}>Läs in senaste versionen</button></div>}
     {access === 'loading' && !error && <p role="status">Kontrollerar behörighet …</p>}
     {access === 'denied' && <p>Redaktionen är tillgänglig för sajtens redaktör. <a href="/signin-with-chatgpt?return_to=%2Fadmin" target="_top">Logga in med rätt konto</a>.</p>}
