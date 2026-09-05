@@ -1,15 +1,19 @@
 # Bidrakartan hosting
 
 Production target: https://bidrakartan.se, with www redirected to the apex.
-Fly app: `bidrakartan`, Stockholm, one stateless 256 MB machine with automatic
-stop/start. Build and deploy with `fly deploy --config fly.toml --remote-only --ha=false`.
+Fly app: `bidrakartan`, Stockholm, one always-running 256 MB machine with a
+1 GB volume at `/data` for intake state and generated images. Keep one machine:
+the intake worker uses an in-process lock. Build and deploy with
+`fly deploy --config fly.toml --remote-only --ha=false`.
 The existing Sites manifest and Worker are retained for the old installation;
 Fly uses `Dockerfile.fly` and `server/fly.mjs` instead.
 
 The prerendered frontend is served by Node. `/api/initiatives` reads every page
 of the public Vibe Cloud Content endpoint and preserves entity IDs as bookmark
-IDs. Failures return an error rather than stale seed data. There are no app
-secrets or databases on the Fly frontend. `/admin` redirects to `/cloud-content`;
+IDs. Failures return an error rather than stale seed data. The server holds a
+restricted `CLOUD_SERVICE_TOKEN` Fly secret and local intake SQLite database;
+the OpenAI key is configured and encrypted in Vibe Cloud. See
+`AUTOMATIC-INTAKE.md` for scheduling, limits and review. `/admin` redirects to `/cloud-content`;
 editor mutations require a Vibe OAuth app:content grant and Cloud owner/admin role.
 Sites identity headers grant no permissions on Fly.
 
@@ -35,8 +39,8 @@ DNS (Fly-assigned):
 | AAAA | @ | 2a09:8280:1::184:34ca:0 |
 | CNAME | www | bidrakartan.se |
 
-Fly certificates have been requested for both hosts. DNS validation must
-complete before the custom-domain HTTPS login flow can be checked end to end.
+Fly certificates have been requested for both hosts. The apex certificate was
+verified issued and active on 2026-09-05.
 Do not change MX/TXT email records. Check certificates with `fly certs check`.
 
 Validation: typecheck, prerender build, catalog pagination, callback/editor

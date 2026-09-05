@@ -1,3 +1,4 @@
+import { discoveryType } from '../cloud/discovery-schema.mjs'
 import { initiativeContentSchema, INITIATIVE_CONTENT_ID } from '../src/content/initiative.ts'
 import { writeFile, mkdir, readFile } from 'node:fs/promises'
 const origin = 'https://bidrakartan.se'
@@ -14,7 +15,7 @@ const registration = {
   origin,
   manifest: { version: 1, id: 'bidra', name: 'Bidrakartan', permissions: ['profile:read', 'storage', 'app:content'], contentTemplates: [],
     presentation: { tagline: 'Hitta din hjärtefråga', description: 'Spara initiativ för människor, djur och natur.', logo: `data:image/svg+xml;base64,${(await readFile('public/bidra-symbol.svg')).toString('base64')}`, locale: 'sv', accentColor: '#e60063' } },
-  management: { migrateFromOrigin: 'https://bidra.opacic357667.chatgpt.site', ownerHandle: 'opacic', redirectUris: [`${origin}/vibe-callback/`, `${origin}/vibe-callback/?vibe_popup=1`], editorUrl: `${origin}/cloud-content`,
+  management: { serviceAccess: JSON.parse(await readFile('cloud/service-access.json', 'utf8')), migrateFromOrigin: 'https://bidra.opacic357667.chatgpt.site', ownerHandle: 'opacic', redirectUris: [`${origin}/vibe-callback/`, `${origin}/vibe-callback/?vibe_popup=1`], editorUrl: `${origin}/cloud-content`,
     contentTypes: [{ id: INITIATIVE_CONTENT_ID, name: 'Initiativ', schema: initiativeContentSchema,
       publication: { fields, metadataFields: ['sourceReadAt'], searchFields: ['title', 'summary', 'organization', 'keywords'], schema: publicSchema,
         inputSchema: { type: 'object', additionalProperties: false, required: ['checks', 'sourceReadAt', 'note'], properties: {
@@ -22,7 +23,7 @@ const registration = {
           sourceReadAt: { type: 'string', format: 'date' }, note: { type: 'string', minLength: 15, maxLength: 2000 }
         } }
       }
-    }] }
+    }, discoveryType] }
 }
 await mkdir('cloud', { recursive: true })
 await writeFile('cloud/registration.json', JSON.stringify(registration, null, 2) + '\n')

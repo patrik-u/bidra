@@ -1,12 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import InitiativeCard from './InitiativeCard'
+import { categoryIcons } from './categoryIcons'
 import { LocateFixed, Minus, Plus, MapPinned, Info } from 'lucide-react'
-import type { Map as LibreMap, Marker } from 'maplibre-gl'
+import type { Map as LibreMap, Marker, Popup } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { categories } from '../data/initiatives'
 import type { Initiative } from '../data/initiatives'
 
-type Props = { items: Initiative[]; selected: string | null; hovered: string | null; onSelect: (id: string) => void }
-export default function InitiativeMap({ items, selected, hovered, onSelect }: Props) {
+type Props = { saved: string[]; onSave: (id: string) => void; items: Initiative[]; selected: string | null; hovered: string | null; onSelect: (id: string) => void }
+export default function InitiativeMap({ items, selected, hovered, onSelect, saved, onSave }: Props) {
+  const [iconTargets, setIconTargets] = useState<{ element: HTMLElement; item: Initiative }[]>([])
+  const [preview, setPreview] = useState<{ element: HTMLElement; item: Initiative } | null>(null)
+  const popup = useRef<Popup | null>(null)
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const dismiss = () => { clearTimeout(hideTimer.current); popup.current?.remove(); popup.current = null; setPreview(null) }
+  const later = () => { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(dismiss, 180) }
+  useEffect(() => { const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') dismiss() }; window.addEventListener('keydown', escape); return () => { window.removeEventListener('keydown', escape); clearTimeout(hideTimer.current); popup.current?.remove() } }, [])
   const container = useRef<HTMLDivElement>(null)
   const mapRef = useRef<LibreMap | null>(null)
   const markers = useRef<{ id: string; marker: Marker }[]>([])
@@ -43,27 +53,46 @@ export default function InitiativeMap({ items, selected, hovered, onSelect }: Pr
   useEffect(() => {
     if (!ready || !mapRef.current) return
     let active = true
-    import('maplibre-gl').then(({ Marker }) => {
+    import('maplibre-gl').then(({ Marker, Popup }) => {
       if (!active || !mapRef.current) return
+      dismiss()
       markers.current.forEach(m => m.marker.remove())
+      const targets: { element: HTMLElement; item: Initiative }[] = []
       markers.current = items.filter(item => item.coordinates).map(item => {
         const el = document.createElement('button')
         el.className = 'initiative-marker'; el.type = 'button'
         el.setAttribute('aria-label', `${item.title}, ${item.region}. Visa initiativ`)
-        el.title = `${item.title} · ${item.region}`
         el.style.setProperty('--marker-color', categories.find(c => c.id === item.category)!.color)
-        const dot = document.createElement('span'); dot.className = 'marker-dot'
+        const dot = document.createElement('span'); dot.className = 'marker-icon'; targets.push({ element: dot, item })
         const label = document.createElement('span'); label.className = 'marker-label'
         label.textContent = item.organization === 'Naturarvet' ? item.region.split(',')[0] : item.organization.replace('Stockholms ', '')
         el.append(dot, label)
-        el.addEventListener('click', () => onSelectRef.current(item.id))
+        el.addEventListener('click', () => { dismiss(); onSelectRef.current(item.id) })
+        const show = () => {
+          clearTimeout(hideTimer.current); popup.current?.remove()
+          const element = document.createElement('div')
+          element.className = 'map-card-preview'
+          element.addEventListener('mouseenter', () => clearTimeout(hideTimer.current))
+          element.addEventListener('mouseleave', later)
+          element.addEventListener('focusin', () => clearTimeout(hideTimer.current))
+          element.addEventListener('focusout', event => { if (!element.contains(event.relatedTarget as Node)) later() })
+          popup.current = new Popup({ closeButton: false, closeOnClick: false, focusAfterOpen: false, offset: 20, maxWidth: '300px', className: 'initiative-popup' }).setLngLat(item.coordinates!).setDOMContent(element).addTo(mapRef.current!)
+          setPreview({ element, item })
+        }
+        el.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover)').matches) show() })
+        el.addEventListener('mouseleave', later)
+        el.addEventListener('focus', show)
+        el.addEventListener('blur', later)
         return { id: item.id, marker: new Marker({ element: el, anchor: 'center' }).setLngLat(item.coordinates!).addTo(mapRef.current!) }
       })
+      setIconTargets(targets)
     })
     return () => { active = false }
   }, [ready, items])
   useEffect(() => { markers.current.forEach(({ id, marker }) => marker.getElement().classList.toggle('highlighted', id === hovered || id === selected)) }, [hovered, selected, items])
   return <section className="map-panel" aria-label="Karta över Sverige">
+    {iconTargets.map(({element,item}) => { const Icon = categoryIcons[item.category]; return createPortal(<Icon size={18} aria-hidden="true"/>, element, item.id) })}
+    {preview && createPortal(<InitiativeCard item={preview.item} saved={saved.includes(preview.item.id)} onSave={() => onSave(preview.item.id)} onOpen={() => { onSelect(preview.item.id); dismiss() }} onHover={() => {}}/>, preview.element)}
     <div className="map-canvas" ref={container} />
     {!loadedTiles && !failed && <div className="map-loading" role="status"><MapPinned size={27} /><span>Laddar kartan över Sverige…</span></div>}
     {failed && <div className="map-loading map-failed" role="status"><MapPinned size={30} /><strong>Kartan kunde inte laddas</strong><span>Du kan fortfarande utforska alla initiativ i listan.</span><button className="primary-button" onClick={() => setRetry(n => n + 1)}>Försök igen</button></div>}

@@ -1,3 +1,4 @@
+import { startIntake } from './intake.mjs'
 import { createServer } from 'node:http'
 import { readFile, stat } from 'node:fs/promises'
 import { resolve, extname, sep } from 'node:path'
@@ -41,6 +42,7 @@ export const server = createServer(async (request, response) => {
     if (url.pathname === '/api/session') return send(200, { admin: false, authenticated: false })
     if (url.pathname.startsWith('/api/')) return send(404, { error: 'Not found' })
     if (url.pathname.replace(/\/$/, '') === '/admin') { response.writeHead(302, { location: '/cloud-content' }); return response.end() }
+    if (/^\/images\/generated-[a-f0-9]{40}\.jpg$/.test(url.pathname)) { const published=(await catalog()).initiatives.some(item=>item.image===url.pathname); if(!published){const auth=request.headers.authorization;if(!auth || auth.length>1024)return send(401,{error:'Authentication required'});const access=await fetch(new URL('/api/managed-apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=vibe.initiative.v1',cloud),{headers:{authorization:auth},signal:AbortSignal.timeout(12000)});if(!access.ok)return send(403,{error:'Forbidden'})} const bytes=await readFile(resolve(process.env.DATA_DIR || '/data', 'images', url.pathname.split('/').pop())); response.writeHead(200, {'content-type':'image/jpeg','cache-control':published?'public, max-age=3600':'private, no-store'}); return response.end(bytes) }
     let path = resolve(root, '.' + decodeURIComponent(url.pathname))
     if (!path.startsWith(root + sep) && path !== root) return send(404, { error: 'Not found' })
     if ((await stat(path)).isDirectory()) path = resolve(path, 'index.html')
@@ -52,3 +54,5 @@ export const server = createServer(async (request, response) => {
   }
 })
 if (process.env.NODE_ENV !== 'test') server.listen(Number(process.env.PORT || 8080), '0.0.0.0')
+
+if (process.env.NODE_ENV !== 'test') void startIntake().catch(error => console.error('Intake startup failed:', error.message))

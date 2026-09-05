@@ -55,7 +55,7 @@ export function bindAppContent(app: ManagedAppView | undefined, page: AppContent
     const button = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
     button.disabled = true;
     const data = new FormData(form);
-    const body: Record<string, unknown> = { action: action === "draft" ? "save" : action, ...(current ? { entityId: current.entityId } : {}), version: current?.editVersion ?? 0 };
+    const body: Record<string, unknown> = { templateId: "vibe.initiative.v1", action: action === "draft" ? "save" : action, ...(current ? { entityId: current.entityId } : {}), version: current?.editVersion ?? 0 };
     if (action === "draft") {
       const payload: Record<string, unknown> = {};
       for (const name of ["title", "organization", "category", "region", "scope", "geography", "summary", "contribution", "source", "donate"]) payload[name] = String(data.get(name) ?? "").trim();
