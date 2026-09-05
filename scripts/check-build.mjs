@@ -10,6 +10,7 @@ assert.ok(workerCode.length > 10000, 'MapLibre worker bundle is unexpectedly emp
 assert.ok(!workerCode.includes('./maplibre-gl-shared.mjs'), 'Worker references an unbundled sibling file.')
 await access(new URL('../dist/client/index.html', import.meta.url))
 await access(new URL('../dist/client/admin/index.html', import.meta.url))
+await access(new URL('../dist/client/cloud-content/index.html', import.meta.url))
 await access(new URL('../dist/client/vibe-callback/index.html', import.meta.url))
 for (const path of ['index.html', 'vibe-callback/index.html']) {
   const html = await readFile(new URL(`../dist/client/${path}`, import.meta.url), 'utf8')

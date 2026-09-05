@@ -1,0 +1,349 @@
+{
+  "origin": "https://bidra.opacic357667.chatgpt.site",
+  "manifest": {
+    "version": 1,
+    "id": "bidra",
+    "name": "Bidra",
+    "permissions": [
+      "profile:read",
+      "storage",
+      "app:content"
+    ],
+    "contentTemplates": [],
+    "presentation": {
+      "tagline": "Hitta din hjärtefråga",
+      "description": "Spara initiativ för människor, djur och natur.",
+      "logo": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiBmaWxsPSJub25lIj4KICA8dGl0bGU+QmlkcmEg4oCTIGV0dCBoasOkcnRhIGkgZW4gc2x1dGVuIGxvb3A8L3RpdGxlPgogIDxwYXRoIGQ9Ik0xMjggNjhDOTUgNiAzMCAxNiAyNiA3NEMyMiAxMjkgNzMgMTg2IDEwOCAyMTFDMTIwIDIyMSAxMzMgMjIzIDE0NSAyMTFDMTkyIDE3MiAyMzAgMTIwIDIzMCA3OEMyMzAgMTkgMTcwIDEyIDEyOCA2OEMxMDQgMTAwIDk5IDEyNSAxMTEgMTM5QzEyNCAxNTMgMTQ0IDE0NSAxNDYgMTI2QzE1MCAxMDQgMTQxIDg2IDEyOCA2OFoiIHN0cm9rZT0iI2Y1MDA3MCIgc3Ryb2tlLXdpZHRoPSIxNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=",
+      "locale": "sv",
+      "accentColor": "#e60063"
+    }
+  },
+  "management": {
+    "ownerHandle": "opacic",
+    "redirectUris": [
+      "https://bidra.opacic357667.chatgpt.site/vibe-callback/",
+      "https://bidra.opacic357667.chatgpt.site/vibe-callback/?vibe_popup=1"
+    ],
+    "editorUrl": "https://bidra.opacic357667.chatgpt.site/cloud-content",
+    "contentTypes": [
+      {
+        "id": "vibe.initiative.v1",
+        "name": "Initiativ",
+        "schema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "$id": "vibe.initiative.v1",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "title"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "maxLength": 160,
+              "minLength": 1
+            },
+            "organization": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "category": {
+              "enum": [
+                "natur",
+                "manniskor",
+                "djur",
+                "klimat",
+                "hav",
+                "barn"
+              ]
+            },
+            "region": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "scope": {
+              "enum": [
+                "local",
+                "national"
+              ]
+            },
+            "geography": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "summary": {
+              "type": "string",
+              "maxLength": 600
+            },
+            "contribution": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "source": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "donate": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "image": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "coordinates": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number"
+              }
+            },
+            "keywords": {
+              "type": "array",
+              "maxItems": 40,
+              "items": {
+                "type": "string",
+                "maxLength": 80
+              }
+            },
+            "giving": {
+              "type": "array",
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "pengar",
+                  "tid"
+                ]
+              }
+            }
+          }
+        },
+        "publication": {
+          "fields": [
+            "title",
+            "organization",
+            "category",
+            "region",
+            "scope",
+            "geography",
+            "summary",
+            "contribution",
+            "source",
+            "donate",
+            "image",
+            "coordinates",
+            "keywords",
+            "giving"
+          ],
+          "metadataFields": [
+            "sourceReadAt"
+          ],
+          "searchFields": [
+            "title",
+            "summary",
+            "organization",
+            "keywords"
+          ],
+          "schema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "organization",
+              "category",
+              "region",
+              "scope",
+              "geography",
+              "summary",
+              "contribution",
+              "source",
+              "donate",
+              "giving",
+              "sourceReadAt"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "maxLength": 160,
+                "minLength": 1
+              },
+              "organization": {
+                "type": "string",
+                "maxLength": 160,
+                "minLength": 1
+              },
+              "category": {
+                "enum": [
+                  "natur",
+                  "manniskor",
+                  "djur",
+                  "klimat",
+                  "hav",
+                  "barn"
+                ]
+              },
+              "region": {
+                "type": "string",
+                "maxLength": 160,
+                "minLength": 1
+              },
+              "scope": {
+                "enum": [
+                  "local",
+                  "national"
+                ]
+              },
+              "geography": {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              "summary": {
+                "type": "string",
+                "maxLength": 600,
+                "minLength": 1
+              },
+              "contribution": {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              "source": {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1,
+                "pattern": "^https://[^/@]+(?:/|$)"
+              },
+              "donate": {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1,
+                "pattern": "^https://[^/@]+(?:/|$)"
+              },
+              "image": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "coordinates": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "keywords": {
+                "type": "array",
+                "maxItems": 40,
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "giving": {
+                "type": "array",
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "pengar",
+                    "tid"
+                  ]
+                },
+                "minItems": 1
+              },
+              "sourceReadAt": {
+                "type": "string",
+                "format": "date",
+                "minLength": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "scope": {
+                      "const": "local"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "coordinates"
+                  ],
+                  "properties": {
+                    "coordinates": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -85,
+                          "maximum": 85
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "checks",
+              "sourceReadAt",
+              "note"
+            ],
+            "properties": {
+              "checks": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "identity",
+                  "source",
+                  "geography",
+                  "donation"
+                ],
+                "properties": {
+                  "identity": {
+                    "const": true
+                  },
+                  "source": {
+                    "const": true
+                  },
+                  "geography": {
+                    "const": true
+                  },
+                  "donation": {
+                    "const": true
+                  }
+                }
+              },
+              "sourceReadAt": {
+                "type": "string",
+                "format": "date"
+              },
+              "note": {
+                "type": "string",
+                "minLength": 15,
+                "maxLength": 2000
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

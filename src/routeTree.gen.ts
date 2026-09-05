@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CloudContentRouteImport } from './routes/cloud-content'
 import { Route as VibeCallbackRouteImport } from './routes/vibe-callback'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CloudContentRoute = CloudContentRouteImport.update({
+  id: '/cloud-content',
+  path: '/cloud-content',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VibeCallbackRoute = VibeCallbackRouteImport.update({
   id: '/vibe-callback',
   path: '/vibe-callback',
@@ -32,30 +38,34 @@ const VibeCallbackRoute = VibeCallbackRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cloud-content': typeof CloudContentRoute
   '/vibe-callback': typeof VibeCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cloud-content': typeof CloudContentRoute
   '/vibe-callback': typeof VibeCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cloud-content': typeof CloudContentRoute
   '/vibe-callback': typeof VibeCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/vibe-callback'
+  fullPaths: '/' | '/admin' | '/cloud-content' | '/vibe-callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/vibe-callback'
-  id: '__root__' | '/' | '/admin' | '/vibe-callback'
+  to: '/' | '/admin' | '/cloud-content' | '/vibe-callback'
+  id: '__root__' | '/' | '/admin' | '/cloud-content' | '/vibe-callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  CloudContentRoute: typeof CloudContentRoute
   VibeCallbackRoute: typeof VibeCallbackRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cloud-content': {
+      id: '/cloud-content'
+      path: '/cloud-content'
+      fullPath: '/cloud-content'
+      preLoaderRoute: typeof CloudContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vibe-callback': {
       id: '/vibe-callback'
       path: '/vibe-callback'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  CloudContentRoute: CloudContentRoute,
   VibeCallbackRoute: VibeCallbackRoute,
 }
 export const routeTree = rootRouteImport
