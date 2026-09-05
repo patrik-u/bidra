@@ -90,7 +90,7 @@ Konton, delade listor, e-post och externa integrationer införs först när de b
 
 Den första leveransen är statiskt förrenderad med TanStack Start. Ingen databas, betalningslösning, extern AI-nyckel, insamlingsrobot eller användarautentisering behövs för själva prototypen. Vid införande av serverfunktioner behöver serverdrift och hemligheter läggas till; statisk publicering ensam kör inte serverfunktioner.
 
-MapLibre laddas separat i webbläsaren. Bakgrundskartan kommer från CARTO/OpenStreetMap och kräver nätanslutning och WebGL. Attribuering visas i kartan. Villkor, kapacitet och lämplig leverantör ska fastställas före en publik lansering i större skala. Listan fungerar även om kartan inte kan visas.
+MapLibre laddas separat i webbläsaren. Dess version 6-worker paketeras med Vites `?worker&url` och anges med `setWorkerUrl`; byggkontrollen säkerställer att den finns som en självständig resurs. Bakgrundskartan kommer från CARTO/OpenStreetMap och kräver nätanslutning och WebGL2. Attribuering visas i kartan. Villkor, kapacitet och lämplig leverantör ska fastställas före en publik lansering i större skala. Listan fungerar även om kartan inte kan visas.
 
 Ett progressivt WebMCP-verktyg, `search_bidra_initiatives`, använder samma sökfunktion och uppdaterar samma gränssnitt. Det tar endast en validerad söktext. Ingen stödd WebMCP-valideringskontext har använts i leveransen, så kompatibiliteten är inte verifierad i webbläsare.
 

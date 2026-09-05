@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { LocateFixed, Minus, Plus, MapPinned, Info } from 'lucide-react'
 import type { Map as LibreMap, Marker } from 'maplibre-gl'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { categories } from '../data/initiatives'
 import type { Initiative } from '../data/initiatives'
 
@@ -23,9 +24,10 @@ export default function InitiativeMap({ items, selected, hovered, onSelect }: Pr
     let observer: ResizeObserver | undefined
     const timeout = setTimeout(() => { if (active && !instance?.areTilesLoaded()) setFailed(true) }, 18000)
     setFailed(false); setReady(false); setLoadedTiles(false)
-    import('maplibre-gl').then(({ Map, AttributionControl }) => {
+    import('maplibre-gl').then(({ Map, AttributionControl, setWorkerUrl }) => {
       if (!active || !container.current) return
       try {
+        setWorkerUrl(workerUrl)
         instance = new Map({ container: container.current, style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', bounds: [[10.3, 55.0], [24.5, 69.3]], fitBoundsOptions: { padding: 45 }, minZoom: 3, maxZoom: 16, attributionControl: false, locale: { 'AttributionControl.ToggleAttribution': 'Visa kartans källor', 'Map.Title': 'Initiativ i Sverige' } })
         mapRef.current = instance
         instance.addControl(new AttributionControl({ compact: true }), 'bottom-right')
