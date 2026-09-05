@@ -7,6 +7,7 @@ const { catalog, server } = await import('../server/fly.mjs')
 test('catalog follows Cloud pages and preserves entity IDs for bookmarks', async () => {
   const offsets = []
   const result = await catalog(async url => {
+    if(url.searchParams.get('templateId')==='bidrakartan.organization.v1')return Response.json({documents:[],hasMore:false})
     const offset = Number(url.searchParams.get('offset')); offsets.push(offset)
     return Response.json({ documents: [{ entityId: `id-${offset}`, templateId: 'vibe.initiative.v1', payload: { category: 'natur', title: 'Skog' } }], hasMore: offset === 0 })
   })

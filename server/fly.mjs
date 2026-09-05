@@ -1,4 +1,5 @@
 import { rulesEndpoint } from './rules-api.mjs'
+import { publicOrganizations, withOrganizations, startOrganizationChecks, organizationsEndpoint } from './organizations.mjs'
 import { startIntake } from './intake.mjs'
 import { createServer } from 'node:http'
 import { readFile, stat } from 'node:fs/promises'
@@ -22,7 +23,7 @@ export async function catalog(fetcher = fetch) {
       if (document.templateId !== 'vibe.initiative.v1' || !item || !['natur','manniskor','djur','klimat','hav','barn'].includes(item.category)) throw new Error('Invalid initiative')
       initiatives.push({ ...item, id: document.entityId, keywords: item.keywords ?? [] })
     }
-    if (!page.hasMore) return { initiatives }
+    if (!page.hasMore) return { initiatives: withOrganizations(initiatives,await publicOrganizations(fetcher)) }
   }
   throw new Error('Catalog pagination limit reached')
 }
@@ -37,6 +38,7 @@ export const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, 'http://localhost')
     if (url.pathname === '/api/editor/rules') return await rulesEndpoint(request, send)
+    if (url.pathname === '/api/editor/organizations') return await organizationsEndpoint(request, send)
     if (!['GET','HEAD'].includes(request.method)) return send(405, { error: 'Method not allowed' })
     if (url.pathname === '/healthz') return send(200, { ok: true })
     if (request.headers.host === 'www.bidrakartan.se') { response.writeHead(308, { location: `https://bidrakartan.se${url.pathname}${url.search}` }); return response.end() }
@@ -58,3 +60,4 @@ export const server = createServer(async (request, response) => {
 if (process.env.NODE_ENV !== 'test') server.listen(Number(process.env.PORT || 8080), '0.0.0.0')
 
 if (process.env.NODE_ENV !== 'test') void startIntake().catch(error => console.error('Intake startup failed:', error.message))
+if (process.env.NODE_ENV !== 'test') void startOrganizationChecks().catch(error => console.error('Organization startup failed:', error.message))

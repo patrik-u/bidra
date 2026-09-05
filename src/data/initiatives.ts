@@ -3,6 +3,9 @@ export type Initiative = {
   id: string
   title: string
   organization: string
+  organizationId?: string
+  kind?: 'standing' | 'campaign' | 'event'
+  endsAt?: string
   category: Category
   region: string
   scope: 'local' | 'national'

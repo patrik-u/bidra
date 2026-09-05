@@ -1,0 +1,272 @@
+[
+  {
+    "id": "org-djurens-ratt",
+    "url": "https://stod.djurensratt.se/gava",
+    "checkedAt": "2026-09-05T17:59:47.194Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://stod.djurensratt.se/gava",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-civil-rights-defenders",
+    "url": "https://crd.org/sv/gava/",
+    "checkedAt": "2026-09-05T17:59:47.284Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://crd.org/sv/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-greenpeace",
+    "url": "https://www.greenpeace.org/sweden/agera/",
+    "checkedAt": "2026-09-05T17:59:47.286Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.greenpeace.org/sweden/agera/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-unicef",
+    "url": "https://unicef.se/stod-oss",
+    "checkedAt": "2026-09-05T17:59:47.287Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://unicef.se/stod-oss",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-lakare-utan-granser",
+    "url": "https://lakareutangranser.se/akut/ge-en-gava",
+    "checkedAt": "2026-09-05T17:59:48.407Z",
+    "status": "review",
+    "httpStatus": 403,
+    "finalUrl": "https://lakareutangranser.se/akut/ge-en-gava",
+    "message": "Gåvosidan behöver kontrolleras; den är fortfarande publicerad."
+  },
+  {
+    "id": "org-roda-korset",
+    "url": "https://www.rodakorset.se/skank-pengar/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:48.410Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.rodakorset.se/skank-pengar/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-svenska-freds",
+    "url": "https://stod.svenskafreds.se/gava/~se-min-donation",
+    "checkedAt": "2026-09-05T17:59:48.411Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://stod.svenskafreds.se/gava/~se-min-donation",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-radda-barnen",
+    "url": "https://www.raddabarnen.se/skank-pengar/",
+    "checkedAt": "2026-09-05T17:59:48.411Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.raddabarnen.se/skank-pengar/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-stockholms-stadsmission",
+    "url": "https://www.stadsmissionen.se/ge-stod/privatperson",
+    "checkedAt": "2026-09-05T17:59:49.165Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.stadsmissionen.se/ge-stod/privatperson",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-goteborgs-stadsmission",
+    "url": "https://www.stadsmissionen.org/ge-en-gava-for-att-du-kan/",
+    "checkedAt": "2026-09-05T17:59:49.166Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.stadsmissionen.org/ge-en-gava-for-att-du-kan/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-wwf",
+    "url": "https://www.wwf.se/stod/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:49.167Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.wwf.se/stod/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-naturskyddsforeningen",
+    "url": "https://www.naturskyddsforeningen.se/stod-oss/ge-en-gava/gava-till-naturen/",
+    "checkedAt": "2026-09-05T17:59:49.167Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.naturskyddsforeningen.se/stod-oss/ge-en-gava/gava-till-naturen/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-sos-barnbyar",
+    "url": "https://sos-barnbyar.se/vad-du-kan-gora/",
+    "checkedAt": "2026-09-05T17:59:51.334Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://sos-barnbyar.se/vad-du-kan-gora/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-unhcr",
+    "url": "https://www.sverigeforunhcr.se/",
+    "checkedAt": "2026-09-05T17:59:51.335Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.sverigeforunhcr.se/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-plan",
+    "url": "https://plansverige.org/stod-barnen/ge-bort-gavobevis/gava-for-akuta-insatser",
+    "checkedAt": "2026-09-05T17:59:51.336Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://plansverige.org/stod-barnen/ge-bort-gavobevis/gava-for-akuta-insatser",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-bris",
+    "url": "https://www.bris.se/stod-bris/",
+    "checkedAt": "2026-09-05T17:59:51.336Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.bris.se/stod-bris/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-barncancerfonden",
+    "url": "https://www.barncancerfonden.se/jag-vill-bidra/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:51.802Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.barncancerfonden.se/jag-vill-bidra/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-cancerfonden",
+    "url": "https://www.cancerfonden.se/gavoshop/privat",
+    "checkedAt": "2026-09-05T17:59:51.803Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.cancerfonden.se/gavoshop/privat",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-hjart-lungfonden",
+    "url": "https://www.hjart-lungfonden.se/stod-oss/gava/",
+    "checkedAt": "2026-09-05T17:59:51.804Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.hjart-lungfonden.se/stod-oss/gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-mind",
+    "url": "https://mind.se/stod-oss/sa-kan-du-bidra/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:51.805Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://mind.se/stod-oss/sa-kan-du-bidra/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-suicide-zero",
+    "url": "https://suicidezero.se/stod-oss/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:52.488Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://suicidezero.se/stod-oss/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-kvinna-till-kvinna",
+    "url": "https://kvinnatillkvinna.se/gava/",
+    "checkedAt": "2026-09-05T17:59:52.490Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://kvinnatillkvinna.se/gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-majblomman",
+    "url": "https://majblomman.se/stod-oss/bli-manadsgivare/",
+    "checkedAt": "2026-09-05T17:59:52.491Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://majblomman.se/stod-oss/bli-manadsgivare/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-erikshjalpen",
+    "url": "https://erikshjalpen.se/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:52.493Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://erikshjalpen.se/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-wateraid",
+    "url": "https://www.wateraid.org/se/ge-en-gava",
+    "checkedAt": "2026-09-05T17:59:53.604Z",
+    "status": "review",
+    "httpStatus": 403,
+    "finalUrl": "https://www.wateraid.org/se/ge-en-gava",
+    "message": "Gåvosidan behöver kontrolleras; den är fortfarande publicerad."
+  },
+  {
+    "id": "org-actionaid",
+    "url": "https://actionaid.se/product-category/gava/",
+    "checkedAt": "2026-09-05T17:59:53.605Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://actionaid.se/product-category/gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-diakonia",
+    "url": "https://www.diakonia.se/stod-oss/ge-en-gava/",
+    "checkedAt": "2026-09-05T17:59:53.606Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.diakonia.se/stod-oss/ge-en-gava/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-act-svenska-kyrkan",
+    "url": "https://www.svenskakyrkan.se/act/ge-en-gava/privatperson",
+    "checkedAt": "2026-09-05T17:59:53.607Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://www.svenskakyrkan.se/act/ge-en-gava/privatperson",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-hundstallet",
+    "url": "https://hundstallet.se/stod-oss/",
+    "checkedAt": "2026-09-05T17:59:54.274Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://hundstallet.se/stod-oss/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  },
+  {
+    "id": "org-naturarvet",
+    "url": "https://naturarvet.se/",
+    "checkedAt": "2026-09-05T17:59:54.275Z",
+    "status": "reachable",
+    "httpStatus": 200,
+    "finalUrl": "https://naturarvet.se/",
+    "message": "Gåvosidan svarar. Innehållet är inte omgranskat."
+  }
+]

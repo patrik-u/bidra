@@ -1,4 +1,5 @@
 import { discoveryType } from '../cloud/discovery-schema.mjs'
+import { organizationType } from '../cloud/organization-schema.mjs'
 import { initiativeContentSchema, INITIATIVE_CONTENT_ID } from '../src/content/initiative.ts'
 import { writeFile, mkdir, readFile } from 'node:fs/promises'
 const origin = 'https://bidrakartan.se'
@@ -23,7 +24,7 @@ const registration = {
           sourceReadAt: { type: 'string', format: 'date' }, note: { type: 'string', minLength: 15, maxLength: 2000 }
         } }
       }
-    }, discoveryType] }
+    }, discoveryType, organizationType] }
 }
 await mkdir('cloud', { recursive: true })
 await writeFile('cloud/registration.json', JSON.stringify(registration, null, 2) + '\n')
