@@ -18,11 +18,11 @@ function ReviewImage({path,title}:{path:string;title:string}) {
   useEffect(()=>{let alive=true;let objectUrl='';void (async()=>{if(!/^\/images\/generated-[a-f0-9]{40}\.jpg$/.test(path))return;const client=await vibeClient();const result=await client.authorizedFetch(new URL(path,location.origin),await client.connect('app:content'));if(!result.ok)return;objectUrl=URL.createObjectURL(await result.blob());if(alive)setSrc(objectUrl);else URL.revokeObjectURL(objectUrl)})().catch(()=>{});return()=>{alive=false;if(objectUrl)URL.revokeObjectURL(objectUrl)}},[path])
   return src?<img src={src} alt={`AI-illustration för ${title}`} loading="lazy"/>:<p>Bildförhandsvisningen kunde inte laddas ännu.</p>
 }
-export default function IntakeQueue() {
-  const [assessments,setAssessments]=useState<Record<string,Assessment>>({}),[filter,setFilter]=useState('all')
+export default function IntakeQueue({mode='queue',initialFilter='all'}:{mode?:'queue'|'rules';initialFilter?:string}) {
+  const [assessments,setAssessments]=useState<Record<string,Assessment>>({}),[filter,setFilter]=useState(initialFilter)
   const [items,setItems]=useState<Candidate[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false),[offset,setOffset]=useState(0),[hasMore,setHasMore]=useState(false)
   async function load(){try{const page=await request(`${base}?templateId=${type}&offset=${offset}`);setItems(page.documents);setHasMore(page.hasMore);setError('')}catch(e){setError(e instanceof Error?e.message:'Kunde inte läsa kön.')}}
-  useEffect(()=>{void load()},[offset])
+  useEffect(()=>{void load();void rulesRequest().then(data=>setAssessments(data.assessments)).catch(error=>setError(error.message))},[offset])
   async function review(item:Candidate,accept:boolean){setBusy(true);setError('');try{
     const entityId=`initiative-${item.entityId}`
     if(accept)await request(base,{action:'save',templateId:'vibe.initiative.v1',entityId,version:0,payload:item.payload.proposal,note:`Förslag från ${item.payload.url}. Källa och AI-förslag måste granskas före publicering.`})
@@ -31,7 +31,8 @@ export default function IntakeQueue() {
     else await load()
   }catch(e){setError(e instanceof Error?e.message:'Kunde inte spara.')}finally{setBusy(false)}}
   const fresh=items.filter(item=>item.payload.state==='new' && (filter==='all' ? assessments[item.entityId]?.decision!=='rejected' : assessments[item.entityId]?.decision===filter))
-  return <section className="intake-queue"><AIRules candidates={items} onAssessments={setAssessments}/><details><summary>Automatiskt insamlade förslag · {fresh.length} på denna sida</summary><p>RSS-källorna kontrolleras dagligen. Förslagen är privata och kan vara nyheter eller redan avslutade aktiviteter. Inget publiceras automatiskt.</p><p><a href="https://console.vibecloud.se/my-apps" target="_blank" rel="noopener noreferrer">Konfigurera appens OpenAI-tjänst i Vibe Cloud</a></p>
+  if(mode==='rules')return <section className="rules-page"><AIRules candidates={items} onAssessments={setAssessments}/>{error&&<p role="alert">{error}</p>}</section>
+  return <section className="intake-queue"><details open><summary>Automatiskt insamlade förslag · {fresh.length} på denna sida</summary><p>RSS-källorna kontrolleras dagligen. Förslagen är privata och kan vara nyheter eller redan avslutade aktiviteter. Inget publiceras automatiskt.</p><p><a href="https://console.vibecloud.se/my-apps" target="_blank" rel="noopener noreferrer">Konfigurera appens OpenAI-tjänst i Vibe Cloud</a></p>
     <label>Visa förslag <select value={filter} onChange={event=>setFilter(event.target.value)}><option value="all">Granskningskö</option><option value="recommended">Rekommenderade</option><option value="uncertain">Osäkra</option><option value="rejected">Bortsorterade av AI</option></select></label>
     {error&&<p role="alert">{error}</p>}
     {!fresh.length&&<p>Inga nya förslag på denna sida. Nya källfynd dyker upp här efter nästa insamling.</p>}

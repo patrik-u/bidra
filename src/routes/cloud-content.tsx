@@ -1,3 +1,4 @@
+import {LayoutDashboard, Inbox, FileText, PlusCircle, SlidersHorizontal, Archive, ArrowLeft} from 'lucide-react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { vibeClient, vibeOrigin } from '../lib/vibe'
@@ -9,6 +10,8 @@ const app = { id: 'app_420b9e39-2820-45c2-b53f-89befa0358b6', name: 'Bidrakartan
 const scopes = ['profile:read', 'storage', 'app:content']
 function ContentEditor() {
   const root = useRef<HTMLDivElement>(null)
+  const [section,setSection]=useState('overview'),[editing,setEditing]=useState(false)
+  const [counts,setCounts]=useState({published:0,drafts:0,candidates:0})
   const [error, setError] = useState('')
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -24,12 +27,22 @@ function ContentEditor() {
     }
     setContentRequest(request)
     const params = new URLSearchParams(location.search)
+    const currentSection=params.get('section')||(params.has('entity')?'initiatives':'overview')
+    setSection(currentSection);setEditing(params.has('entity'))
     const response = await request(`/api/managed-apps/${app.id}/content?templateId=vibe.initiative.v1&offset=${encodeURIComponent(params.get('offset') ?? '0')}`)
     if (!response.ok) throw new Error(response.status === 404 || response.status === 403 ? 'Ditt Vibe-konto saknar administratörsåtkomst till Bidrakartan.' : 'Innehållet kunde inte läsas.')
     const page = await response.json() as AppContentPage
     if (root.current) {
       root.current.innerHTML = appContentTemplate(app, page)
       bindAppContent(app, page, '', load)
+    }
+    const documents=[...page.documents]
+    if(currentSection==='overview'){
+      documents.length=0
+      for(let offset=0;offset<10000;offset+=50){const result=await request(`/api/managed-apps/${app.id}/content?templateId=vibe.initiative.v1&offset=${offset}`);if(!result.ok)throw new Error('Kunde inte läsa översikten.');const data=await result.json() as AppContentPage;documents.push(...data.documents);if(!data.hasMore)break}
+      let candidates=0
+      for(let offset=0;offset<10000;offset+=50){const result=await request(`/api/managed-apps/${app.id}/content?templateId=bidrakartan.discovery.v1&offset=${offset}`);if(!result.ok)throw new Error('Kunde inte läsa kön.');const data=await result.json();candidates+=data.documents.filter((item:{payload:{state:string}})=>item.payload.state==='new').length;if(!data.hasMore)break}
+      setCounts({published:documents.filter(item=>item.publishedRevisionId).length,drafts:documents.filter(item=>!item.publishedRevisionId).length,candidates})
     }
     setReady(true)
   }
@@ -43,8 +56,15 @@ function ContentEditor() {
     catch (cause) { setError(cause instanceof Error ? cause.message : 'Inloggningen misslyckades.') }
     finally { try { popup.close() } catch {} setBusy(false) }
   }
-  return <main className="cloud-editor"><header><a href="/"><img src="/bidra-symbol.svg" width="36" height="36" alt=""/> bidrakartan.</a><a href="/">Till kartan</a></header>
-    {!ready && <section><h1>Redaktion</h1><p>Logga in med det Vibe-konto som äger eller administrerar Bidrakartan.</p><button onClick={connect} disabled={busy}>{busy ? 'Slutför inloggningen i fönstret…' : 'Logga in'}</button></section>}
-    {error && <p role="alert">{error}</p>}{ready && <IntakeQueue/>}<div ref={root}/></main>
+  const sections=[{id:'overview',label:'Översikt',Icon:LayoutDashboard},{id:'pending',label:'Väntande förslag',Icon:Inbox},{id:'rejected',label:'Bortsorterade av AI',Icon:Archive},{id:'initiatives',label:'Initiativ',Icon:FileText},{id:'create',label:'Skapa nytt',Icon:PlusCircle},{id:'rules',label:'AI-regler',Icon:SlidersHorizontal}]
+  return <main className={`cloud-editor editorial-dashboard view-${section} ${editing?'is-editing':''}`}><header><a href="/"><img src="/bidra-symbol.svg" width="36" height="36" alt=""/> bidrakartan.<span className="editorial-brand-label">Redaktion</span></a><a href="/"><ArrowLeft size={16}/> Till kartan</a></header>
+    <div className="editorial-layout"><aside className="editorial-sidebar"><nav aria-label="Redaktionens avdelningar">{sections.map(({id,label,Icon})=><a key={id} href={`/cloud-content?section=${id}`} aria-current={section===id?'page':undefined}><Icon size={18}/>{label}</a>)}</nav><p>Hantera innehåll och regler för Bidrakartan.</p></aside><div className="editorial-main">
+    {!ready && <section><h1>Redaktion</h1><p>Logga in med det Vibe-konto som äger eller administrerar Bidrakartan.</p><button onClick={connect} disabled={busy}>{busy?'Slutför inloggningen i fönstret…':'Logga in'}</button></section>}
+    {error&&<p role="alert">{error}</p>}
+    {ready&&section==='overview'&&<section><p className="results-eyebrow">REDAKTION</p><h1>Översikt</h1><p>Från insamlat förslag till publicerat initiativ.</p><div className="editorial-metrics"><a href="?section=initiatives"><strong>{counts.published}</strong>Publicerade initiativ</a><a href="?section=initiatives"><strong>{counts.drafts}</strong>Initiativutkast</a><a href="?section=pending"><strong>{counts.candidates}</strong>Obehandlade förslag, inklusive AI-sorterade</a></div><div className="editorial-overview-note"><h2>Insamlingen arbetar i bakgrunden</h2><p>RSS-källor kontrolleras dagligen. AI-bearbetning körs varje timme inom appens anropsgränser. Publicering kräver fortfarande ett redaktionellt beslut.</p><a className="button" href="?section=pending">Gå till förslagen</a> <a className="button secondary" href="?section=rules">Justera AI-regler</a></div></section>}
+    {ready&&['pending','rejected','rules'].includes(section)&&<><h1>{sections.find(item=>item.id===section)?.label}</h1><IntakeQueue key={section} mode={section==='rules'?'rules':'queue'} initialFilter={section==='rejected'?'rejected':'all'}/></>}
+    <div ref={root} hidden={!ready||!['initiatives','create'].includes(section)}/>
+    </div></div></main>
+
 }
 export const Route = createFileRoute('/cloud-content')({ component: ContentEditor, head: () => ({ meta: [{ title: 'Initiativ · Bidrakartan' }, { name: 'robots', content: 'noindex' }] }) })

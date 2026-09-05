@@ -11,7 +11,7 @@ export interface AppContentPage {
 }
 const h = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
 const selected = (page: AppContentPage) => page.documents.find(item => item.entityId === new URLSearchParams(location.search).get("entity"));
-const link = (id: string, entity = "", offset = 0) => `/cloud-content?${new URLSearchParams({ app: id, ...(entity ? { entity } : {}), offset: String(offset) })}`;
+const link = (id: string, entity = "", offset = 0, section = entity ? "initiatives" : "create") => `/cloud-content?${new URLSearchParams({ app: id, section, ...(entity ? { entity } : {}), offset: String(offset) })}`;
 
 export function appContentTemplate(app: ManagedAppView | undefined, page: AppContentPage | null) {
   if (!app || !page) return `<section class="card"><h1>Innehållet kunde inte öppnas</h1><p>Kontrollera att appen har Content aktiverat och att du har åtkomst.</p><a href="/">Till Mina appar</a></section>`;
@@ -22,7 +22,7 @@ export function appContentTemplate(app: ManagedAppView | undefined, page: AppCon
   return `<section class="dashboard-page app-content-page"><a href="/" class="hint">Bidrakartan / ${h(app.name)}</a><h1>Initiativ</h1><p class="hint">Hantera initiativen som visas på kartan. Utkast är privata tills du publicerar dem.</p>
     <div class="app-content-layout"><aside class="card app-content-list"><a class="button secondary" href="${link(app.id)}">Nytt initiativ</a>
       ${page.documents.length ? page.documents.map(item => `<a class="content-list-item ${current?.entityId === item.entityId ? "active" : ""}" href="${link(app.id, item.entityId, page.offset)}"><strong>${h(item.payload.title)}</strong><span>${!item.publishedRevisionId ? "Utkast" : item.publishedRevisionId === item.id ? "Publicerat" : "Publicerat · nytt utkast"}</span></a>`).join("") : `<p class="hint">Inga initiativ ännu. Börja med ett utkast.</p>`}
-      <div class="button-row">${page.offset > 0 ? `<a href="${link(app.id, "", Math.max(0, page.offset - 50))}">Föregående</a>` : ""}${page.hasMore ? `<a href="${link(app.id, "", page.offset + 50)}">Nästa</a>` : ""}</div>
+      <div class="button-row">${page.offset > 0 ? `<a href="${link(app.id, "", Math.max(0, page.offset - 50), "initiatives")}">Föregående</a>` : ""}${page.hasMore ? `<a href="${link(app.id, "", page.offset + 50, "initiatives")}">Nästa</a>` : ""}</div>
     </aside><div class="card app-content-editor"><h2>${current ? "Redigera initiativ" : "Nytt utkast"}</h2><p class="hint">Utkast och granskningsanteckningar kan bara läsas av appens ägare och administratörer.</p>
       <form id="app-content-draft">${field("title", "Rubrik", 160)}${field("organization", "Organisation", 160)}
         <div class="content-field-pair"><div class="field"><label for="content-category">Område</label><select id="content-category" name="category">${Object.entries(initiativeCategories).map(([key, label]) => `<option value="${key}" ${draft.category === key ? "selected" : ""}>${label}</option>`).join("")}</select></div><div class="field"><label for="content-scope">Verksamhet</label><select id="content-scope" name="scope"><option value="national" ${draft.scope !== "local" ? "selected" : ""}>Rikstäckande</option><option value="local" ${draft.scope === "local" ? "selected" : ""}>Lokal</option></select></div></div>
