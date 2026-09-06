@@ -16,7 +16,7 @@ publicSchema.allOf = [{ if: { properties: { scope: { const: 'local' } } }, then:
 const registration = {
   origin,
   manifest: { version: 1, id: 'bidra', name: 'Bidrakartan', permissions: ['profile:read', 'storage', 'app:content'], contentTemplates: [],
-    presentation: { tagline: 'Hitta din hjärtefråga', description: 'Spara initiativ för människor, djur och natur.', logo: `data:image/svg+xml;base64,${(await readFile('public/bidra-symbol.svg')).toString('base64')}`, locale: 'sv', accentColor: '#e60063' } },
+    presentation: { tagline: 'Hitta din hjärtefråga', description: 'Spara initiativ för människor, djur och natur.', logo: `data:image/svg+xml;base64,${(await readFile('public/bidra-symbol.svg')).toString('base64')}`, locale: 'sv', accentColor: '#f3003b' } },
   management: { serviceAccess: JSON.parse(await readFile('cloud/service-access.json', 'utf8')), migrateFromOrigin: 'https://bidra.opacic357667.chatgpt.site', ownerHandle: 'opacic', redirectUris: [`${origin}/vibe-callback/`, `${origin}/vibe-callback/?vibe_popup=1`], editorUrl: `${origin}/cloud-content`,
     contentTypes: [{ id: INITIATIVE_CONTENT_ID, name: 'Initiativ', schema: initiativeContentSchema,
       publication: { fields, metadataFields: ['sourceReadAt'], searchFields: ['title', 'summary', 'organization', 'keywords'], schema: publicSchema,

@@ -9,8 +9,8 @@ import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { categories } from '../data/initiatives'
 import type { Initiative } from '../data/initiatives'
 
-type Props = { saved: string[]; onSave: (id: string) => void; items: Initiative[]; selected: string | null; hovered: string | null; onSelect: (id: string) => void }
-export default function InitiativeMap({ items, selected, hovered, onSelect, saved, onSave }: Props) {
+type Props = { saved: string[]; onSave: (id: string) => void; items: Initiative[]; selected: string | null; hovered: string | null; onSelect: (id: string) => void; focusTarget: {id:string;coordinates:[number,number]} | null; onShowMap:(item:Initiative)=>void }
+export default function InitiativeMap({ items, selected, hovered, onSelect, saved, onSave, focusTarget, onShowMap }: Props) {
   const [iconTargets, setIconTargets] = useState<{ element: HTMLElement; item: Initiative }[]>([])
   const [preview, setPreview] = useState<{ element: HTMLElement; item: Initiative } | null>(null)
   const previewObserver=useRef<ResizeObserver|null>(null)
@@ -68,6 +68,17 @@ export default function InitiativeMap({ items, selected, hovered, onSelect, save
     return () => { active = false; clearTimeout(timeout); observer?.disconnect(); markers.current.forEach(m => m.marker.remove()); markers.current = []; userMarker.current?.remove(); instance?.remove(); mapRef.current = null }
   }, [retry])
   useEffect(() => {
+    if(!ready || !focusTarget || !mapRef.current)return
+    const frame=requestAnimationFrame(()=>{
+      const map=mapRef.current;if(!map)return
+      dismiss();map.resize()
+      map.flyTo({center:focusTarget.coordinates,zoom:11,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:650})
+      container.current?.closest<HTMLElement>('.map-panel')?.focus({preventScroll:true})
+      container.current?.scrollIntoView({block:'center',behavior:'instant'})
+    })
+    return ()=>cancelAnimationFrame(frame)
+  },[ready,focusTarget])
+  useEffect(() => {
     if (!ready || !mapRef.current) return
     let active = true
     import('maplibre-gl').then(({ Marker }) => {
@@ -111,9 +122,9 @@ export default function InitiativeMap({ items, selected, hovered, onSelect, save
     return () => { active = false }
   }, [ready, items])
   useEffect(() => { markers.current.forEach(({ id, marker }) => marker.getElement().classList.toggle('highlighted', id === hovered || id === selected)) }, [hovered, selected, items])
-  return <section className="map-panel" aria-label="Karta över Sverige">
+  return <section className="map-panel" aria-label="Karta över Sverige" tabIndex={-1}>
     {iconTargets.map(({element,item}) => { const Icon = categoryIcons[item.category]; return createPortal(<Icon size={18} aria-hidden="true"/>, element, item.id) })}
-    {preview && createPortal(<><button className="preview-close" aria-label="Stäng förhandsvisning" onClick={dismiss}><X size={16}/></button><InitiativeCard item={preview.item} saved={saved.includes(preview.item.id)} onSave={() => onSave(preview.item.id)} onOpen={() => { onSelect(preview.item.id); dismiss() }} onHover={() => {}}/></>, preview.element)}
+    {preview && createPortal(<><button className="preview-close" aria-label="Stäng förhandsvisning" onClick={dismiss}><X size={16}/></button><InitiativeCard item={preview.item} saved={saved.includes(preview.item.id)} onSave={() => onSave(preview.item.id)} onOpen={() => { onSelect(preview.item.id); dismiss() }} onShowMap={()=>onShowMap(preview.item)} onHover={() => {}}/></>, preview.element)}
     <div className="map-canvas" ref={container} />
     {!loadedTiles && !failed && <div className="map-loading" role="status"><MapPinned size={27} /><span>Laddar kartan över Sverige…</span></div>}
     {failed && <div className="map-loading map-failed" role="status"><MapPinned size={30} /><strong>Kartan kunde inte laddas</strong><span>Du kan fortfarande utforska alla initiativ i listan.</span><button className="primary-button" onClick={() => setRetry(n => n + 1)}>Försök igen</button></div>}
