@@ -27,7 +27,7 @@
     "@tanstack/react-start": "latest",
     "@vibe/account-menu": "file:vendor/vibe-account-menu-0.1.0.tgz",
     "@vibe/sdk": "file:vendor/vibe-sdk-0.1.4.tgz",
-    "@vibe/support-widget": "file:vendor/vibe-support-widget-0.2.0.tgz",
+    "@vibe/support-widget": "file:vendor/vibe-support-widget-0.3.0.tgz",
     "cheerio": "^1.2.0",
     "drizzle-orm": "^0.45.2",
     "fast-xml-parser": "^5.11.1",
