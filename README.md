@@ -24,4 +24,4 @@ Cloud-registreringen exporteras med `node scripts/export-cloud-registration.mjs`
 
 Fem källor kontrolleras normalt var sjätte timme; arbetaren kontrollerar kön varje timme. Källstödda AI-rekommendationer publiceras automatiskt. Osäkra och bortsorterade förslag finns i redaktionen. Sökningen kombinerar ordmatchning med semantisk likhet och fungerar med vanlig sökning vid kvot eller tjänstefel. Bokmärken kan sparas på enheten eller Vibe-kontot. Externa organisationskonton och donationsuppföljning återstår. Gåvor hanteras hos organisationerna.
 
-Se [automatisk insamling och sökning](docs/AUTOMATISK-INSAMLING.md), [bilder](docs/BILDGENERERING.md) och [Vibe-kontokopplingen](docs/VIBE-KONTO.md). Äldre färdplaner beskriver tidigare skeden av projektet.
+Se [automatisk insamling och sökning](docs/AUTOMATISK-INSAMLING.md), [bilder](docs/BILDGENERERING.md), [Vibe-kontokopplingen](docs/VIBE-KONTO.md) och [feedbackstyrd utveckling](docs/FEEDBACK-UTVECKLING.md). Äldre färdplaner beskriver tidigare skeden av projektet.
