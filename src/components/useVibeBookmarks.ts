@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { VibeProfile } from '@vibe/sdk'
+import type { AccountIdentity } from '@vibe/account-menu'
 import { changeSaved, readSaved, savedIds, vibeClient } from '../lib/vibe'
 
 function deviceSaved() {
@@ -9,6 +10,7 @@ function deviceSaved() {
 export function useVibeBookmarks(notify: (message: string) => void) {
   const [saved, setSaved] = useState<string[]>([])
   const [profile, setProfile] = useState<VibeProfile | null>(null)
+  const [remembered, setRemembered] = useState<AccountIdentity[]>([])
   const [busy, setBusy] = useState(true)
   const [error, setError] = useState('')
   const [localCount, setLocalCount] = useState(0)
@@ -23,11 +25,12 @@ export function useVibeBookmarks(notify: (message: string) => void) {
       const client = await vibeClient()
       if (await client.resume(['profile:read', 'storage'])) {
         const account = await client.profile()
-        setProfile(account)
-        setSaved((await readSaved(client)).ids)
+        const nextSaved = await readSaved(client)
+        setProfile(account); setSaved(nextSaved.ids)
       } else { setProfile(null); setSaved(deviceSaved()) }
+      setRemembered(client.rememberedAccounts())
       setLocalCount(deviceSaved().length); setError('')
-    } catch (e) { setError(e instanceof Error ? e.message : 'Kunde inte ansluta till Vibe.'); setSaved([]) }
+    } catch (e) { setError(e instanceof Error ? e.message : 'Kunde inte ansluta till Vibe.'); setProfile(null); setSaved([]) }
     finally { lock.current = false; setBusy(false) }
   }
   useEffect(() => {
@@ -36,7 +39,7 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     window.addEventListener('focus', focus)
     return () => window.removeEventListener('focus', focus)
   }, [])
-  const login = async (redirect = false) => {
+  const login = async (redirect = false, loginHint?: string) => {
     if (lock.current) return
     const popup = redirect ? undefined : window.open('about:blank', 'bidra-login', 'popup=yes,width=520,height=740,resizable=yes,scrollbars=yes')
     if (!redirect && !popup) { setPopupFallback(true); return }
@@ -44,17 +47,21 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     loginController.current = controller
     setLoginPending(true)
     lock.current = true; setBusy(true); setError(''); setPopupFallback(false)
+    setProfile(null); setSaved([])
     let completed = false
+    let failure = ''
     try {
-      await (await vibeClient()).switchAccount(['profile:read', 'storage'], { redirect, popup: popup ?? undefined, signal: controller.signal })
+      await (await vibeClient()).switchAccount(['profile:read', 'storage'], { redirect, loginHint, popup: popup ?? undefined, signal: controller.signal })
       completed = true
     } catch {
       if (!controller.signal.aborted) {
-        setError('Inloggningen slutfördes inte. Du kan försöka igen eller fortsätta i samma flik.')
+        failure = 'Inloggningen slutfördes inte. Du kan försöka igen eller fortsätta i samma flik.'
         setPopupFallback(true)
       }
     } finally { try { popup?.close() } catch { /* Browser may isolate the popup. */ } loginController.current = null; setLoginPending(false); lock.current = false; setBusy(false) }
-    if (completed) { await refresh(); notify('Du är inloggad på Bidrakartan.') }
+    await refresh()
+    if (completed) notify('Du är inloggad på Bidrakartan.')
+    else if (failure) setError(failure)
   }
   const logout = async () => {
     if (lock.current) return
@@ -89,5 +96,5 @@ export function useVibeBookmarks(notify: (message: string) => void) {
     } catch (e) { setError(e instanceof Error ? e.message : 'Kunde inte kopiera.') }
     finally { lock.current = false; setBusy(false) }
   }
-  return { saved, profile, busy, error, localCount, popupFallback, loginPending, cancelLogin: () => loginController.current?.abort(), login, logout, toggleSave, importLocal, refresh }
+  return { saved, profile, remembered, busy, error, localCount, popupFallback, loginPending, cancelLogin: () => loginController.current?.abort(), login, logout, toggleSave, importLocal, refresh }
 }

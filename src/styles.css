@@ -76,3 +76,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .detail-description{margin:24px 0;color:var(--ink);font-size:1rem;line-height:1.75}.detail-description p{margin-bottom:16px}.detail-meta{margin:20px 0}.detail-place-link,.detail-place{display:inline-flex;align-items:center;gap:7px;font-size:.875rem;padding:7px 10px;border-radius:8px;background:#f6f7f5}.detail-place-link{color:var(--primary)}.detail-place-link:hover{background:#fff1f4;text-decoration:underline}.detail-source{margin:22px 0 4px;font-size:.875rem}.detail-source a{display:inline-flex;align-items:center;gap:5px}.detail-source small{display:block;margin-top:8px;color:var(--muted);font-size:.75rem}
 
 .card-donate{display:inline-flex;align-items:center;gap:4px;margin-left:auto;padding:5px 8px;border:1px solid #f3003b26;border-radius:6px;background:#fff5f7;color:var(--primary);font-size:.75rem;font-weight:600;text-decoration:none;white-space:nowrap}.card-donate:hover{background:#ffe7ed;border-color:#f3003b66}.card-donate:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+
+.bidra-account-menu.vibe-account{--account-accent:#f3003b;--account-hover:#fff1f4;--account-radius:14px;--account-ink:var(--ink);--account-muted:var(--muted);min-width:48px}.account-actions .bidra-account-menu.vibe-account{flex-shrink:0}
+

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Banknote, Clock, ArrowDownUp, ArrowRight, ArrowUpRight, Bookmark, Check, ChevronDown, Compass, Earth, HandHeart, Heart, Info, List, MapPin, MapPinned, Search, ShieldCheck, SlidersHorizontal, Sparkles, Sprout, Users, X } from 'lucide-react'
+import { Banknote, Clock, ArrowDownUp, ArrowRight, ArrowUpRight, Bookmark, Check, ChevronDown, Compass, Earth, HandHeart, Heart, Info, List, MapPin, MapPinned, Search, ShieldCheck, SlidersHorizontal, Sparkles, Sprout, X } from 'lucide-react'
 import { categories, checkedAt, searchInitiatives } from '../data/initiatives'
 import type { Category, Initiative } from '../data/initiatives'
 import InitiativeMap from './InitiativeMap'
@@ -10,6 +10,7 @@ import { vibeOrigin } from '../lib/vibe'
 
 import InitiativeCard from './InitiativeCard'
 import InitiativePhoto from './InitiativePhoto'
+import VibeAccountMenu from './VibeAccountMenu'
 import { categoryIcons as icons } from './categoryIcons'
 function Modal({ title, onClose, children, detail = false, footer }: { title: string; onClose: () => void; children: ReactNode; footer?: ReactNode; detail?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null)
@@ -57,7 +58,7 @@ export default function Bidra() {
   useWebMCP(value => { reset(); setSort('relevance'); setMobileMap(false); setSelected(null); setModal(null); search(value) }, initiatives)
   return <div className="app-shell">
     <a className="skip-link" href="#initiativ">Hoppa till initiativen</a>
-    <header className="site-header"><button className="brand" onClick={reset} aria-label="Bidrakartan, visa alla initiativ"><span className="brand-symbol"><img src="/bidra-symbol.svg" alt="" width="46" height="46" /></span>bidrakartan<span className="brand-dot">.</span></button><nav aria-label="Huvudmeny"><button className={!savedOnly ? 'nav-link active' : 'nav-link'} onClick={() => setSavedOnly(false)}>Utforska</button><button className="nav-link" onClick={() => setModal('how')}>Så fungerar Bidrakartan</button><button className="nav-link" onClick={() => setModal('about')}>Om Bidrakartan</button><a className="nav-link" href="/cloud-content">Redaktion</a></nav><div className="account-actions"><button className={`saved-nav ${savedOnly ? 'active' : ''}`} onClick={() => setSavedOnly(v => !v)} aria-pressed={savedOnly}><Bookmark size={18} /><span>Sparade</span>{saved.length > 0 && <span className="saved-count">{saved.length}</span>}</button><button className="account-nav" disabled={account.busy} onClick={() => account.profile ? setModal('account') : void account.login()}><Users size={18} /><span>{account.profile ? 'Mitt konto' : 'Logga in'}</span></button></div></header>
+    <header className="site-header"><button className="brand" onClick={reset} aria-label="Bidrakartan, visa alla initiativ"><span className="brand-symbol"><img src="/bidra-symbol.svg" alt="" width="46" height="46" /></span>bidrakartan<span className="brand-dot">.</span></button><nav aria-label="Huvudmeny"><button className={!savedOnly ? 'nav-link active' : 'nav-link'} onClick={() => setSavedOnly(false)}>Utforska</button><button className="nav-link" onClick={() => setModal('how')}>Så fungerar Bidrakartan</button><button className="nav-link" onClick={() => setModal('about')}>Om Bidrakartan</button><a className="nav-link" href="/cloud-content">Redaktion</a></nav><div className="account-actions"><button className={`saved-nav ${savedOnly ? 'active' : ''}`} onClick={() => setSavedOnly(v => !v)} aria-pressed={savedOnly}><Bookmark size={18} /><span>Sparade</span>{saved.length > 0 && <span className="saved-count">{saved.length}</span>}</button><VibeAccountMenu options={{ appName: 'Bidrakartan', locale: 'sv', compact: true, profile: account.profile, remembered: account.remembered, busy: account.busy, profileUrl: `${vibeOrigin}/profile`, onLogin: () => account.login(), onSwitchAccount: hint => account.login(false, hint), onLogout: account.logout, actions: [{ id: 'saved', label: 'Sparade initiativ', icon: 'bookmark', onSelect: () => setSavedOnly(true) }, { id: 'account', label: 'Sparande och appåtkomst', icon: 'settings', onSelect: () => setModal('account') }] }} /></div></header>
     {account.error && <div className="account-status" role="alert">{account.error}<button onClick={() => account.refresh()}>Försök igen</button><button onClick={() => account.login()}>Logga in igen</button><button onClick={() => setModal('account')}>Konto</button></div>}
     {account.popupFallback && <div className="account-status" role="status">Fungerar inte inloggningsfönstret?<button disabled={account.busy} onClick={() => account.login(true)}>Fortsätt i samma flik</button></div>}
     {account.loginPending && <div className="account-status" role="status">Slutför inloggningen i fönstret.<button onClick={account.cancelLogin}>Avbryt</button></div>}
