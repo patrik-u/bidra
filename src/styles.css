@@ -22,7 +22,7 @@
 .eyebrow{color:#916176}.discovery p,.card-copy p,.modal p{color:#746a6e}
 .guide-button{border-color:#ffc2dc}.search-form{border-color:#eadfe5}.search-form:focus-within{outline-color:#f3003b}
 .search-leading,.search-country,.clear-search{color:#8b7079}.search-form input::placeholder{color:#95848b}
-.category-button.selected,.filter-button.filtered,.saved-nav.active{background:#fff0f7;border-color:#ffb1d3;color:#d6005e}
+.category-button.selected,.filter-button.filtered,.saved-nav.active{background:#fff1f4;border-color:#f3003b66;color:var(--primary)}
 .save-button.is-saved,.save-button:hover{background:#fff0f7;color:var(--primary)}
 .guide-grid button.chosen,.guide-giving button.chosen{border-color:#f3003b;background:#fff0f7;color:var(--primary)}
 .about-symbol,.how-step>span{background:#fff0f7;color:var(--primary)}
@@ -73,3 +73,4 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:760px){.giving-shortcuts{margin:16px 20px 0;gap:8px}.giving-shortcuts>span{display:none}.giving-shortcuts button{font-size:.8rem;padding:10px 12px}.brand-symbol{width:36px;height:36px}.detail-footer{padding:12px 23px max(12px,env(safe-area-inset-bottom))}.collection-sources{grid-template-columns:1fr}}
 @media(forced-colors:active){.results-scroll,.modal-inner,.category-scroll{scrollbar-color:auto}}
 .card-map-link{pointer-events:auto;cursor:pointer;z-index:2}.card-map-link:hover{color:var(--primary);background:white;text-decoration:underline}.detail-map-link{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--primary);flex-shrink:0;padding:6px;border-radius:8px}.detail-map-link span{font-size:11px;white-space:nowrap}.detail-map-link:hover{background:var(--surface)}.initiative-marker{padding:0!important}
+.detail-description{margin:24px 0;color:var(--ink);font-size:1rem;line-height:1.75}.detail-description p{margin-bottom:16px}.detail-meta{margin:20px 0}.detail-place-link,.detail-place{display:inline-flex;align-items:center;gap:7px;font-size:.875rem;padding:7px 10px;border-radius:8px;background:#f6f7f5}.detail-place-link{color:var(--primary)}.detail-place-link:hover{background:#fff1f4;text-decoration:underline}.detail-source{margin:22px 0 4px;font-size:.875rem}.detail-source a{display:inline-flex;align-items:center;gap:5px}.detail-source small{display:block;margin-top:8px;color:var(--muted);font-size:.75rem}
