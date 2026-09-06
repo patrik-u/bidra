@@ -35,7 +35,7 @@ export async function openCollection(directory) {
 let shared
 export function collectionStore(){return shared??=openCollection(process.env.DATA_DIR||'/data')}
 async function content(body,auth) {
-  const response=await fetch(`${cloud}/api/${auth?'managed-apps':'service/apps'}/${app}/content`,{method:'POST',headers:{'content-type':'application/json',authorization:auth||`Bearer ${process.env.CLOUD_SERVICE_TOKEN}`},body:JSON.stringify({templateId:OPPORTUNITY_TYPE,...body}),signal:AbortSignal.timeout(25000)})
+  const response=await fetch(`${cloud}/api/${auth?'managed-apps':'service/apps'}/${app}/content`,{method:'POST',headers:{'content-type':'application/json',authorization:auth||`Bearer ${process.env.CLOUD_SERVICE_TOKEN}`,...(auth?{origin:'https://bidrakartan.se'}:{})},body:JSON.stringify({templateId:OPPORTUNITY_TYPE,...body}),signal:AbortSignal.timeout(25000)})
   if(!response.ok){const value=await response.json().catch(()=>({}));throw Object.assign(new Error(`Cloud ${response.status}: ${String(value.error||'Innehållet kunde inte sparas').slice(0,180)}`),{status:response.status})}
   return response.json()
 }
@@ -43,7 +43,7 @@ export async function publishCandidate(row,mutate=content,auth) {
   let document
   if(auth){
     // Authenticated humans read via the managed API, including service-owned drafts.
-    for(let offset=0;offset<10000;offset+=50){const r=await fetch(`${cloud}/api/managed-apps/${app}/content?templateId=${OPPORTUNITY_TYPE}&offset=${offset}`,{headers:{authorization:auth},signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error('Kunde inte läsa senaste versionen');const page=await r.json();document=page.documents.find(d=>d.entityId===row.id);if(document||!page.hasMore)break}
+    for(let offset=0;offset<10000;offset+=50){const r=await fetch(`${cloud}/api/managed-apps/${app}/content?templateId=${OPPORTUNITY_TYPE}&offset=${offset}`,{headers:{authorization:auth,origin:'https://bidrakartan.se'},signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error('Kunde inte läsa senaste versionen');const page=await r.json();document=page.documents.find(d=>d.entityId===row.id);if(document||!page.hasMore)break}
   }else document=(await mutate({action:'read',entityId:row.id})).document
   const changed=JSON.stringify(document?.payload)!==JSON.stringify(row.assessment.proposal)
   if(changed)document=(await mutate({action:'save',entityId:row.id,version:document?.editVersion||0,payload:row.assessment.proposal,note:auth?'Manuellt godkänt förslag':'Automatisk bearbetning av officiell källa'},auth)).document
@@ -124,8 +124,8 @@ export async function startCollection(loadExisting){
 export async function collectionEndpoint(request,send){
   const auth=request.headers.authorization
   if(!auth||auth.length>4096)return send(401,{error:'Logga in som redaktör.'})
-  const access=await fetch(`${cloud}/api/managed-apps/${app}/content?templateId=${OPPORTUNITY_TYPE}`,{headers:{authorization:auth},signal:AbortSignal.timeout(15000)})
-  if(!access.ok)return send(403,{error:'Du behöver redaktörsåtkomst.'})
+  const access=await fetch(`${cloud}/api/managed-apps/${app}/content?templateId=${OPPORTUNITY_TYPE}`,{headers:{authorization:auth,origin:'https://bidrakartan.se'},signal:AbortSignal.timeout(15000)})
+  if(!access.ok)return send(access.status===401?401:access.status>=500?503:403,{error:access.status===401?'Inloggningen har gått ut. Logga in igen.':access.status>=500?'Vibe Cloud kunde inte nås. Försök igen.':'Du behöver redaktörsåtkomst.'})
   const store=await collectionStore()
   if(request.method==='GET')return send(200,{...store.view(),running})
   if(request.method!=='POST')return send(405,{error:'Metoden stöds inte.'})

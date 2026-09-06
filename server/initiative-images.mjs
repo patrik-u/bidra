@@ -152,8 +152,8 @@ export async function startInitiativeImages(load){
 export async function imageEndpoint(request,send,load){
   const auth=request.headers.authorization
   if(!auth||auth.length>4096)return send(401,{error:'Logga in som redaktör.'})
-  const access=await fetch(`https://console.vibecloud.se/api/managed-apps/${app}/content?templateId=vibe.initiative.v1`,{headers:{authorization:auth},signal:AbortSignal.timeout(15000)})
-  if(!access.ok)return send(403,{error:'Du behöver redaktörsåtkomst.'})
+  const access=await fetch(`https://console.vibecloud.se/api/managed-apps/${app}/content?templateId=vibe.initiative.v1`,{headers:{authorization:auth,origin:'https://bidrakartan.se'},signal:AbortSignal.timeout(15000)})
+  if(!access.ok)return send(access.status===401?401:access.status>=500?503:403,{error:access.status===401?'Inloggningen har gått ut. Logga in igen.':access.status>=500?'Vibe Cloud kunde inte nås. Försök igen.':'Du behöver redaktörsåtkomst.'})
   if(!['GET','POST'].includes(request.method))return send(405,{error:'Metoden stöds inte.'})
   const store=await imageStore(),items=await load()
   const view=()=>{const data=store.view(),ids=new Set(items.map(item=>item.id));return {...data,choices:data.choices.filter(item=>ids.has(item.id)),jobs:data.jobs.filter(job=>ids.has(job.entity_id)),items:store.apply(items).map(item=>({...item,fingerprint:imageFingerprint(items.find(raw=>raw.id===item.id))}))}}

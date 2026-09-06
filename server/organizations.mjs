@@ -92,7 +92,7 @@ export async function organizationsEndpoint(request,send){
   if(request.method!=='GET')return send(405,{error:'Metoden stöds inte.'})
   const auth=request.headers.authorization
   if(!auth||auth.length>4096)return send(401,{error:'Logga in som redaktör.'})
-  const response=await fetch(`https://console.vibecloud.se/api/managed-apps/${appId}/content?templateId=${template}`,{headers:{authorization:auth},signal:AbortSignal.timeout(15000)})
-  if(!response.ok)return send(403,{error:'Du behöver redaktörsåtkomst.'})
+  const response=await fetch(`https://console.vibecloud.se/api/managed-apps/${appId}/content?templateId=${template}`,{headers:{authorization:auth,origin:'https://bidrakartan.se'},signal:AbortSignal.timeout(15000)})
+  if(!response.ok)return send(response.status===401?401:response.status>=500?503:403,{error:response.status===401?'Inloggningen har gått ut. Logga in igen.':response.status>=500?'Vibe Cloud kunde inte nås. Försök igen.':'Du behöver redaktörsåtkomst.'})
   return send(200,{checks:(await organizationChecks()).view()})
 }

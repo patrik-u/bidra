@@ -5,8 +5,8 @@ let testing = false
 export async function rulesEndpoint(request, send) {
   const auth=request.headers.authorization
   if(!auth || auth.length>4096)return send(401,{error:'Logga in som redaktör.'})
-  const access=await fetch('https://console.vibecloud.se/api/managed-apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=bidrakartan.discovery.v1',{headers:{authorization:auth},signal:AbortSignal.timeout(15000)})
-  if(!access.ok)return send(403,{error:'Du behöver redaktörsåtkomst.'})
+  const access=await fetch('https://console.vibecloud.se/api/managed-apps/app_420b9e39-2820-45c2-b53f-89befa0358b6/content?templateId=bidrakartan.discovery.v1',{headers:{authorization:auth,origin:'https://bidrakartan.se'},signal:AbortSignal.timeout(15000)})
+  if(!access.ok)return send(access.status===401?401:access.status>=500?503:403,{error:access.status===401?'Inloggningen har gått ut. Logga in igen.':access.status>=500?'Vibe Cloud kunde inte nås. Försök igen.':'Du behöver redaktörsåtkomst.'})
   const store=await rulesStore()
   if(request.method==='GET')return send(200,store.view())
   if(request.method!=='POST')return send(405,{error:'Metoden stöds inte.'})
