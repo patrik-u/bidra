@@ -8,3 +8,7 @@ Before editing files for a substantial task:
 - Monorepos: when working across packages, run the skill check from the workspace root and prefer the local skill for the package being changed.
 - Multiple matches: prefer the most specific local skill for the package or concern you are changing; load additional skills only when the task spans multiple packages or concerns.
 <!-- intent-skills:end -->
+
+## Gemensam ekosystemkontext
+
+Vid Cloud-integration, delade komponenter eller roadmap: läs `../projektportfolj/README.md` och skillen `../projektportfolj/skills/vibe-ecosystem/SKILL.md`. Kalenderns separata projektstart finns i `../vibe-org/vibe-calendar`. Appspecifika Bidrakartan-regler ligger kvar här.
