@@ -19,10 +19,12 @@ function Modal({ title, onClose, children, detail = false, footer }: { title: st
   return <dialog ref={ref} className={detail ? 'modal detail-modal' : 'modal'} onCancel={onClose} onClick={e => { if (e.target === e.currentTarget) onClose() }} aria-labelledby="modal-title"><div className="modal-inner"><div className="modal-heading"><span className="eyebrow">BIDRAKARTAN</span><button className="icon-button" onClick={onClose} aria-label="Stäng"><X size={21} /></button></div><h2 id="modal-title">{title}</h2>{children}</div>{footer&&<div className="detail-footer">{footer}</div>}</dialog>
 }
 export default function Bidra() {
+  const support = useRef<ReturnType<typeof createSupportWidget> | null>(null)
   useEffect(() => {
-    const widget = createSupportWidget({cloudOrigin:vibeOrigin,appName:'Bidrakartan',analyticsInfo:true,accent:'#f3003b',locale:'sv'})
+    const widget = createSupportWidget({cloudOrigin:vibeOrigin,appName:'Bidrakartan',analyticsInfo:true,accent:'#f3003b',locale:'sv',context:{route:'explore'},actionNames:['filter.changed','detail.opened','search.submitted']})
+    support.current = widget
     recordEvent(vibeOrigin,'page_view')
-    return () => widget.destroy()
+    return () => { widget.destroy(); support.current = null }
   }, [])
   const [initiatives, setInitiatives] = useState<Initiative[]>([])
   const [catalogState, setCatalogState] = useState('loading')
@@ -38,7 +40,7 @@ export default function Bidra() {
   const [savedOnly, setSavedOnly] = useState(false)
   const [hovered, setHovered] = useState<string | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
-  useEffect(() => { if(selected) recordEvent(vibeOrigin, 'detail_view', location.origin, selected) }, [selected])
+  useEffect(() => { support.current?.setContext({route:selected?'initiative-detail':'explore'}); if(selected) { support.current?.trackAction('detail.opened'); recordEvent(vibeOrigin, 'detail_view', location.origin, selected) } }, [selected])
   const [modal, setModal] = useState<'about' | 'how' | 'guide' | 'filters' | 'account' | null>(null)
   const [mobileMap, setMobileMap] = useState(false)
   const [mapTarget,setMapTarget]=useState<{id:string;coordinates:[number,number]}|null>(null)
@@ -46,6 +48,8 @@ export default function Bidra() {
   const [notice, setNotice] = useState('')
   const account = useVibeBookmarks(setNotice)
   const { saved, toggleSave } = account
+  useEffect(() => { support.current?.clearContext(); support.current?.setContext({route:'explore'}) }, [account.profile?.rootDid, account.busy])
+  useEffect(() => { support.current?.trackAction('filter.changed') }, [category,giving,localOnly])
   const [guideChoice, setGuideChoice] = useState<Category | null>(null)
   const [guideStep, setGuideStep] = useState(1)
   const [guideGiving, setGuideGiving] = useState('all')
@@ -66,7 +70,7 @@ export default function Bidra() {
     return ()=>clearTimeout(timer)
   }, [query, results.length, catalogState, semantic.query])
   const reset = () => { setQuery(''); setInput(''); setCategory('all'); setGiving('all'); setLocalOnly(false); setSavedOnly(false) }
-  const search = (value: string) => { if(value.trim()) recordEvent(vibeOrigin,'search'); setQuery(value); setInput(value); setSavedOnly(false); resultsRef.current?.scrollTo({ top: 0, behavior: 'smooth' }) }
+  const search = (value: string) => { support.current?.trackAction('search.submitted'); if(value.trim()) recordEvent(vibeOrigin,'search'); setQuery(value); setInput(value); setSavedOnly(false); resultsRef.current?.scrollTo({ top: 0, behavior: 'smooth' }) }
   const openGuide = () => { setGuideStep(1); setGuideChoice(null); setGuideGiving('all'); setModal('guide') }
   useWebMCP(value => { reset(); setSort('relevance'); setMobileMap(false); setSelected(null); setModal(null); search(value) }, initiatives)
   return <div className="app-shell">
